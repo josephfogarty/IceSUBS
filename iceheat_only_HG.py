@@ -67,7 +67,7 @@ plt.close()
 
 # Time parameters
 dt = 0.5; # time between iterations, in seconds
-nt = 50000; # amount of iterations
+nt = 250000; # amount of iterations
 t_days = (dt*nt)/86400.0
 
 # Calculate r, want ~0.25, must be < 0.5
@@ -320,6 +320,6 @@ os.chmod(folder, 0o777)
 filelist = [f for f in os.listdir(folder)]
 for f in filelist:
     os.remove(os.path.join(folder, f))
-os.remove("figures/HGonly/icemovie.gif")
+os.remove("figures/HGonly/icemovieHG.gif")
 
 print("\nGif images and gif removed!")
