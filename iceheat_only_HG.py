@@ -67,7 +67,7 @@ plt.close()
 
 # Time parameters
 dt = 0.5; # time between iterations, in seconds
-nt = 250000; # amount of iterations
+nt = 5000; # amount of iterations
 t_days = (dt*nt)/86400.0
 
 # Calculate r, want ~0.25, must be < 0.5
@@ -82,25 +82,6 @@ def ice_q(T):
     e = 611*np.exp((Ls/R_v)*((1/273)-(1/T)))
     return (eps_R*e)/(p_a+e*(eps_R-1))
 q_i = ice_q(T_it)
-#Alt method:
-#def ice_q(T):
-#    A_ice = 3.41*(10**12) #Pascal
-#    B_ice = 6130 #Kelvin
-#    e = A_ice*np.exp((-1.0*B_ice)/T)
-#    return (eps_R*e)/(p_a+e*(eps_R-1))
-#q_i = ice_q(T_it)
-#Alt method2:
-#def vap_pres_from_temp(T):
-#    T_t = 273.16 #K
-#    tau = 1 - (T/T_t)
-#    a1 = -22.4948
-#    a2 = -0.227
-#    a3 = 0.502
-#    a4 = 0.562
-#    rhs = (a1*tau+a2*tau**2+a3*tau**3+a4*tau**4)*(T_t/T)
-#    print(rhs)
-#    e = 611.657*np.exp(rhs)
-#    return (eps_R*e)/(p_a+e*(eps_R-1))
 
 #Create an empty list for outputs and plots
 top_ice_temp_list = []
@@ -234,6 +215,7 @@ for i in range(0,nt):
 
 #%% Movie Time
 
+#create a gif from all of the saved images
 png_dir = 'figures/HGonly/giffiles/'
 images = []
 for file_name in os.listdir(png_dir):
@@ -241,6 +223,20 @@ for file_name in os.listdir(png_dir):
         file_path = os.path.join(png_dir, file_name)
         images.append(imageio.imread(file_path))
 imageio.mimsave('figures/HGonly/icemovieHG.gif',images)
+
+#convert this gif to a movie
+import moviepy.editor as mp
+clip = mp.VideoFileClip("figures/HGonly/icemovieHG.gif")
+clip.write_videofile("figures/HGonly/icemovieHG.mp4")
+
+#now delete the gif and images used to make the gif
+os.chmod(png_dir, 0o777)
+filelist = [f for f in os.listdir(png_dir)]
+for f in filelist:
+    os.remove(os.path.join(folder, f))
+os.remove("figures/HGonly/icemovieHG.gif")
+
+print("\nGif images and gif removed!")
 
 #%% Plotting Main Results
 locs, labels = plt.yticks()
@@ -307,19 +303,3 @@ plt.legend()
 plt.tight_layout()
 plt.savefig("figures/HGonly/surface_and _air_temp_temporal.png")
 plt.close()
-
-
-#%% Now again, clear up the folders to save storage space
-
-import moviepy.editor as mp
-clip = mp.VideoFileClip("figures/HGonly/icemovieHG.gif")
-clip.write_videofile("figures/HGonly/icemovieHG.mp4")
-
-folder = "figures/HGonly/giffiles"
-os.chmod(folder, 0o777)
-filelist = [f for f in os.listdir(folder)]
-for f in filelist:
-    os.remove(os.path.join(folder, f))
-os.remove("figures/HGonly/icemovieHG.gif")
-
-print("\nGif images and gif removed!")
