@@ -4,9 +4,11 @@
 # forward time centered space (FTCS) finite difference method
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 from scipy import optimize
 import imageio
 import os #shutil
+from math import ceil
 
 # Constants in SI Units
 alpha = 0.3; # albedo
@@ -67,7 +69,7 @@ plt.close()
 
 # Time parameters
 dt = 0.5; # time between iterations, in seconds
-nt = 1000000; # amount of iterations
+nt = 2000; # amount of iterations
 t_days = (dt*nt)/86400.0
 
 # Calculate r, want ~0.25, must be < 0.5
@@ -101,6 +103,10 @@ q_i = ice_q(T_it)
 #    print(rhs)
 #    e = 611.657*np.exp(rhs)
 #    return (eps_R*e)/(p_a+e*(eps_R-1))
+
+# Function to round up to nearest ten (useful for plotting)
+def roundup(x):
+    return int(ceil(x / 10.0)) * 10
 
 #Function to calculate incoming solar value, starting at midnight
 def sw_net(t): #t is in seconds, so dt*i would be evaluated
@@ -324,6 +330,12 @@ plt.close()
 
 #%% Some more output
 
+params = {'font.size': 20, 'font.family': 'serif', 'xtick.major.pad': '4'}
+mpl.rcParams.update(params)
+mpl.rcParams['figure.figsize'] = 18, 10 
+mpl.rcParams['xtick.labelsize'] = 22
+mpl.rcParams['ytick.labelsize'] = 20
+
 locs, labels = plt.yticks()
 
 #Create Time Array
@@ -338,9 +350,9 @@ plt.plot(time_hours,H_b_list,label="Sensible Heat Flux")
 plt.plot(time_hours,bottom_flux_sum_list,label="Bottom Flux Sum")
 plt.title(title_bottom)
 plt.xlabel("Time (hr)")
-#plt.yticks(locs, map(lambda x: "%.1f" % x, locs*1e0))
 plt.ylabel('Flux (W m**-2)')
-plt.legend()
+plt.grid()
+plt.legend(prop={'size':20})
 plt.tight_layout()
 plt.savefig("figures/bottom_fluxes_temporal.png")
 plt.close()
@@ -353,9 +365,8 @@ plt.plot(time_hours,sw_net_list,label="Shortwave Net Flux")
 plt.plot(time_hours,rad_net_list,label="Total Net Radiative Flux")
 plt.title(title_top_rad)
 plt.ylabel('Flux (W m**-2)')
-#plt.yticks(locs, map(lambda x: "%.1f" % x, locs*1e0))
 plt.xlabel("Time (hr)")
-#plt.axhline("0",linewidth=1, color="k")
+plt.grid()
 plt.legend()
 plt.tight_layout()
 plt.savefig("figures/radiative_fluxes_temporal.png")
@@ -374,6 +385,8 @@ plt.ylabel('Flux (W m**-2)')
 plt.xlabel("Time (hr)")
 #plt.axhline("0",linewidth=1, color="k")
 plt.legend()
+plt.xlim(left=0)
+plt.grid()
 plt.tight_layout()
 plt.savefig("figures/top_fluxes_temporal.png")
 plt.close()
@@ -392,6 +405,7 @@ ax2.set_ylabel("Mass Loss Rate (Bottom) (kg s**-1 m**-2)",color=color)
 ax2.plot(time_hours,mass_loss_bottom_list,color=color)
 ax2.tick_params(axis='y',labelcolor=color)
 plt.tight_layout()
+plt.grid()
 plt.savefig("figures/mass_loss_temporal.png")
 print(f"Mass change on top: {sum(mass_loss_top_list)*dt:.3f}")
 print(f"Mass change on bottom: {sum(mass_loss_bottom_list)*dt:.3f}")
@@ -411,6 +425,7 @@ ax2.set_ylabel("Thickness Loss Rate (Bottom) (kg s**-1 m**-2)",color=color)
 ax2.plot(time_hours,thickness_loss_bottom_list,color=color)
 ax2.tick_params(axis='y',labelcolor=color)
 plt.tight_layout()
+plt.grid()
 plt.savefig("figures/thickness_loss_temporal.png")
 print(f"Thickness change on top: {(sum(thickness_loss_top_list)*dt):.6f}")
 print(f"Thickness change on bottom: {(sum(thickness_loss_bottom_list)*dt):.6f}")
@@ -426,6 +441,7 @@ plt.xlabel("Time (hr)")
 plt.ylabel('Temperature (K)')
 plt.legend()
 plt.tight_layout()
+plt.grid()
 plt.savefig("figures/surface_and _air_temp_temporal.png")
 plt.close()
 
