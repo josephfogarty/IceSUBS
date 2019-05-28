@@ -38,12 +38,3 @@ with writer.saving(fig, f"main/figures/ice_solution_movie.mp4", 100):
         plt.clf()
 print('\ncrank movie done')        
 
-
-
-
-
-
-
-
-
-
