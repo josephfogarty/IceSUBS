@@ -90,5 +90,5 @@ plt.matshow(surfacechecker8,cmap=cmap)
 
 
 #%% close all matshows
-
-plt.close("all")
+#
+#plt.close("all")
