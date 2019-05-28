@@ -79,7 +79,7 @@ x = np.linspace(0.0,L,n+1);
 
 # Time parameters
 dt = 0.5; # time between iterations, in seconds
-nt = 1000000; # amount of iterations
+nt = 400000; # amount of iterations
 t_days = (dt*nt)/86400.0
 
 # Calculate r, want ~0.25, must be < 0.5
@@ -197,40 +197,33 @@ thickness_loss_bottom_list = []
 #%% Start Iteration
 for i in range(0,nt):
     
-    # Run through the CN scheme for interior points
+    # run through the CN scheme for interior points
     u = sparse.linalg.spsolve(A,rhs)
     
-    #force to be column vector
+    # force to be column vector
     u.shape = (len(u),1)
-
-    #update u top boundary
-    u[0]=air_temp(i*dt)
     
-    #update rhs with new interior nodes
-    rhs = B.dot(u)
-    
-    #append this array to solution file
+    # append this array to solution file
     if (i*dt)%120 == 0: #every 60 seconds
         u_soln = np.append(u_soln, u, axis=1)    
     
-    #set T_top
-    T_top = float(u[0])
-    
-    #Now update values of the top EB polynomial (only a0 and a1 change)    
+    # update values of the top EB polynomial (only a0 and a1 change)    
     a0 = sw_net(i*dt)+lw_in*(1-eps_ice)+(rho_a*u_star_top)*((c_pa*c_h*air_temp(i*dt)) \
                 +(Ls*c_h*(q_a-ice_q(float(u[0])))))+(kappa_ice*(float(u[1]))/dx);
-    #a1 stays like this (it is all constants)
-    #a1 = (-1.0*rho_a*c_pa*u_star_top*c_h)+(-1.0*kappa_ice/dx);
     def top_ice_flux(x):
         return a0 + a1*x + a4*(x**4)
-    #Now find the nearest root, this uses the secant method
+    
+    # find the nearest root, this uses the secant method
     root = optimize.newton(top_ice_flux, float(u[0]))
    
-    # time in seconds to hours on a 24-hour clock will be used for air temp function
-    print(f"%={(i/nt)*100:.3f}, hr={(i*dt/3600)%24:.4f}, root={root:.4f}, value={top_ice_flux(root):.4f}")
-    
-    #Now set this root as the new BC for Tsoln
+    # set this root as the new BC for Tsoln
     u[0]=root
+    
+    #update rhs with new interior nodes
+    rhs = B.dot(u)
+
+    # print progress
+    print(f"%={(i/nt)*100:.3f}, hr={(i*dt/3600)%24:.4f}, root={root:.4f}, value={top_ice_flux(root):.4f}")
     
     # Calculate individual terms on top from this iteration
     sw_net_value = sw_net(i*dt)
@@ -281,9 +274,6 @@ u_soln = u_soln.transpose()
 np.savetxt(f"solutions/ice_solver_{n+1}nodes.txt",u_soln, fmt = '%.10f',delimiter=' ')
 
 #%% Some more output
-
-
-locs, labels = plt.yticks()
 
 #Create Time Array
 time_list = dt*(np.array(list(range(1,nt+1)))) #in seconds, can convert later
