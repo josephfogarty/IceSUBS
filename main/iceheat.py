@@ -79,7 +79,7 @@ x = np.linspace(0.0,L,n+1);
 
 # Time parameters
 dt = 0.5; # time between iterations, in seconds
-nt = 400000; # amount of iterations
+nt = 1000000; # amount of iterations
 t_days = (dt*nt)/86400.0
 
 # Calculate r, want ~0.25, must be < 0.5
@@ -273,13 +273,17 @@ for i in range(0,nt):
 u_soln = u_soln.transpose()
 np.savetxt(f"solutions/ice_solver_{n+1}nodes.txt",u_soln, fmt = '%.10f',delimiter=' ')
 
-#%% Some more output
+#%% Some temporal output
+
+#colors
+bluecol = 'tab:blue'
+redcol = 'tab:red'
 
 #Create Time Array
 time_list = dt*(np.array(list(range(1,nt+1)))) #in seconds, can convert later
 time_hours = time_list/3600.0
 
-#Plot time evolution of bottom fluxes
+#Bottom Fluxes
 title_bottom = f"Time Evolution of Bottom Fluxes after {t_days:.2f} days"
 plt.plot(time_hours,Lf_b_list,label="Latent Heat (f) Flux")
 plt.plot(time_hours,G_b_list,label="Conductive Heat Flux")
@@ -290,11 +294,28 @@ plt.xlabel("Time (hr)")
 plt.ylabel('Flux (W m**-2)')
 plt.grid()
 plt.legend(prop={'size':20})
-plt.tight_layout()
+#plt.tight_layout()
 plt.savefig("figures/bottom_fluxes_temporal.png")
 plt.close()
 
-#Plot time evolution of top radiation
+#Top fluxes
+title_top=f"Time Evolution of Top Fluxes after {t_days:.2f} days"
+plt.plot(time_hours,rad_net_list,label="Radiation Net Flux")
+plt.plot(time_hours,H_t_list,label="Sensible Heat Flux")
+plt.plot(time_hours,Ls_t_list,label="Latent Heat (s) Flux")
+plt.plot(time_hours,G_t_list,label="Conductive Heat Flux")
+plt.plot(time_hours,top_flux_sum_list,label="Top Flux Sum")
+plt.title(title_top)
+plt.ylabel('Flux (W m**-2)')
+plt.xlabel("Time (hr)")
+plt.legend()
+plt.xlim(left=0)
+plt.grid()
+plt.tight_layout()
+plt.savefig("figures/top_fluxes_temporal.png")
+plt.close()
+
+#Radiation budget
 title_top_rad=f"Time Evolution of Top Radiative Fluxes after {t_days:.2f} days"
 plt.plot(time_hours,lw_in_list,label="Longwave In Flux")
 plt.plot(time_hours,lw_out_list,label="Longwave Out Flux")
@@ -309,38 +330,17 @@ plt.tight_layout()
 plt.savefig("figures/radiative_fluxes_temporal.png")
 plt.close()
 
-#Plot time evolution of top fluxes
-title_top=f"Time Evolution of Top Fluxes after {t_days:.2f} days"
-plt.plot(time_hours,rad_net_list,label="Radiation Net Flux")
-plt.plot(time_hours,H_t_list,label="Sensible Heat Flux")
-plt.plot(time_hours,Ls_t_list,label="Latent Heat (s) Flux")
-plt.plot(time_hours,G_t_list,label="Conductive Heat Flux")
-plt.plot(time_hours,top_flux_sum_list,label="Top Flux Sum")
-plt.title(title_top)
-plt.ylabel('Flux (W m**-2)')
-#plt.yticks(locs, map(lambda x: "%.1f" % x, locs*1e0))
-plt.xlabel("Time (hr)")
-#plt.axhline("0",linewidth=1, color="k")
-plt.legend()
-plt.xlim(left=0)
-plt.grid()
-plt.tight_layout()
-plt.savefig("figures/top_fluxes_temporal.png")
-plt.close()
-
 #Plot time evoluation of mass loss (top and bottom)
 title_mass=f"Mass Loss Rate after {t_days:.2f} days"
 plt.title(title_mass)
-color = 'tab:blue'
 fig, ax1 = plt.subplots()
 ax1.set_xlabel("Time (hr)")
-ax1.set_ylabel("Mass Loss Rate (Top) (kg s**-1 m**-2)",color=color)
-ax1.plot(time_hours,mass_loss_top_list,color=color)
+ax1.set_ylabel("Mass Loss Rate (Top) (kg s**-1 m**-2)",color=bluecol)
+ax1.plot(time_hours,mass_loss_top_list,color=bluecol)
 ax2 = ax1.twinx()
-color = 'tab:red'
-ax2.set_ylabel("Mass Loss Rate (Bottom) (kg s**-1 m**-2)",color=color)
-ax2.plot(time_hours,mass_loss_bottom_list,color=color)
-ax2.tick_params(axis='y',labelcolor=color)
+ax2.set_ylabel("Mass Loss Rate (Bottom) (kg s**-1 m**-2)",color=redcol)
+ax2.plot(time_hours,mass_loss_bottom_list,color=redcol)
+ax2.tick_params(axis='y')
 plt.tight_layout()
 plt.grid()
 plt.savefig("figures/mass_loss_temporal.png")
@@ -348,19 +348,17 @@ print(f"Mass change on top: {sum(mass_loss_top_list)*dt:.3f}")
 print(f"Mass change on bottom: {sum(mass_loss_bottom_list)*dt:.3f}")
 plt.close()
 
-#Plot time evoluation of thickness loss (top and bottom)
+#Thickness loss (top and bottom)
 title_mass2=f"Thickness Loss Rate after {t_days:.2f} days"
 plt.title(title_mass2)
-color = 'tab:blue'
 fig, ax1 = plt.subplots()
 ax1.set_xlabel("Time (hr)")
-ax1.set_ylabel("Thickness Loss Rate (Top) (kg s**-1 m**-2)",color=color)
-ax1.plot(time_hours,thickness_loss_top_list,color=color)
+ax1.set_ylabel("Thickness Loss Rate (Top) (kg s**-1 m**-2)",color=bluecol)
+ax1.plot(time_hours,thickness_loss_top_list,color=bluecol)
 ax2 = ax1.twinx()
-color = 'tab:red'
-ax2.set_ylabel("Thickness Loss Rate (Bottom) (kg s**-1 m**-2)",color=color)
-ax2.plot(time_hours,thickness_loss_bottom_list,color=color)
-ax2.tick_params(axis='y',labelcolor=color)
+ax2.set_ylabel("Thickness Loss Rate (Bottom) (kg s**-1 m**-2)",color=redcol)
+ax2.plot(time_hours,thickness_loss_bottom_list,color=redcol)
+ax2.tick_params(axis='y')
 plt.tight_layout()
 plt.grid()
 plt.savefig("figures/thickness_loss_temporal.png")
@@ -368,18 +366,15 @@ print(f"Thickness change on top: {(sum(thickness_loss_top_list)*dt):.6f}")
 print(f"Thickness change on bottom: {(sum(thickness_loss_bottom_list)*dt):.6f}")
 plt.close()
 
-#Plot time evolution of surface temperature and air temperature
+#Surface temp and air temp comparison
 title_T_it=f"Surface and Air Temperature Evolution after {t_days:.2f} days"
 plt.plot(time_hours,top_ice_temp_list,label="Top of Ice Surface Temperature")
 plt.plot(time_hours,air_temp_list,label="Air Temperature")
 plt.title(title_T_it)
 plt.xlabel("Time (hr)")
-#plt.yticks(locs, map(lambda x: "%.3f" % x, locs*1e0))
 plt.ylabel('Temperature (K)')
 plt.legend()
 plt.tight_layout()
 plt.grid()
 plt.savefig("figures/surface_and _air_temp_temporal.png")
 plt.close()
-
-plt.matshow(u_soln)
