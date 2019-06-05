@@ -16,18 +16,18 @@ We now describe our physical system and problem statement. We consider a block o
 
 As mentioend above, the domain for this ice block is 2 meters. Using a spatial mesh of 400 cells, we have a length of 5 mm between nodes. We set a dt of 0.5, however this number may be changed in the code.
 
-The main numerical method utilized here is the Crank-Nicolson method, an implicit method that is second-order accurate in space and time. The Crank-Nicolson method gives rise to solving a sparse linear system every time step. The Python module 'scipy.sparse' allows for quick iterations of solving these systems.
+The main numerical method utilized here is the Crank-Nicolson method, an implicit method that is second-order accurate in space and time. The Crank-Nicolson method gives rise to solving a sparse linear system every time step. The Python module `scipy.sparse` allows for quick iterations of solving these systems.
 
 ## Models in the Code
 
 There are a few models in the code based off of real-world observations and theory. First we define a function to calculate the specific humidity above ice given a certain temperature:
 
-'''python
+```python
 # Calculate q from T
 def ice_q(T):
     e = 611*np.exp((Ls/R_v)*((1/273)-(1/T)))
     return (eps_R*e)/(p_a+e*(eps_R-1))
-'''
+```
 
 
 The consants used may be found in the appendix.
