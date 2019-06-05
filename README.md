@@ -10,7 +10,7 @@ Collaborators:
 
 ## Physical System
 
-We now describe our physical system and problem statement. We consider a block of sea ice floating in the Arctic ocean. If we consider the temperature $u$ to be constant in the horizontal, then we are able to solve the following 1D system in the vertical for the temperature of the ice, $u$:
+We now describe our physical system and problem statement. We consider a block of sea ice floating in the Arctic ocean. If we consider the temperature $$u$$ to be constant in the horizontal, then we are able to solve the following 1D system in the vertical for the temperature of the ice, $u$:
 
 \begin{equation}
 \begin{aligned} \frac{\partial u}{\partial t} &=\alpha \frac{\partial^{2} u}{\partial x^{2}} \end{aligned}
