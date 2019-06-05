@@ -10,30 +10,27 @@ Collaborators:
 
 ## Physical System
 
-We now describe our physical system and problem statement. We consider a block of sea ice floating in the Arctic ocean. If we consider the temperature $$u$$ to be constant in the horizontal, then we are able to solve the following 1D system in the vertical for the temperature of the ice, $u$:
+We now describe our physical system and problem statement. We consider a block of sea ice floating in the Arctic ocean that is 2 meters deep, with the top above the water and the bottom below the water. If we consider the temperature to be constant in the horizontal, then we are able to solve the 1D heat equation in the vertical for the temperature of the ice, giving a temperature profile of the ice block.
 
-                                                         2                            
-                              partial u           partial  u                          
-begin{equation}begin{aligned} --------- & = alpha ---------- end{aligned}end{equation}
-                              partial t                    2                          
-                                                  partial x                           
+## Numerics of the Code
+
+As mentioend above, the domain for this ice block is 2 meters. Using a spatial mesh of 400 cells, we have a length of 5 mm between nodes. We set a dt of 0.5, however this number may be changed in the code.
+
+The main numerical method utilized here is the Crank-Nicolson method, an implicit method that is second-order accurate in space and time. The Crank-Nicolson method gives rise to solving a sparse linear system every time step. The Python module 'scipy.sparse' allows for quick iterations of solving these systems.
+
+## Models in the Code
+
+There are a few models in the code based off of real-world observations and theory. First we define a function to calculate the specific humidity above ice given a certain temperature:
+
+'''python
+# Calculate q from T
+def ice_q(T):
+    e = 611*np.exp((Ls/R_v)*((1/273)-(1/T)))
+    return (eps_R*e)/(p_a+e*(eps_R-1))
+'''
 
 
-
-and
-
-\begin{equation}
-\alpha=\frac{k}{\rho c_{p}}.
-\end{equation}
-
-where $\alpha$ is the thermal diffusivity in \si{\square\meter\per\second}, $k$ is the thermal conductivity in \si{\watt\per\metre\per\kelvin}, $\rho$ is the density in \si{\kilo\gram\per\cubic\meter}, and $c_{p}$ is the specific heat at constant pressure in \si{\joule\per\kilo\gram\per\kelvin}. For values these values that correspond to ice, we calculate $\alpha$:
-
-\begin{equation}
-\alpha = \frac{k}{\rho c_{p}} = \frac{2.25 \si{\watt\per\kelvin\per\meter}}{\left(916.7 \si{\kilo\gram\per\cubic\meter}\right)\left(2027 \si{\joule\per\kilo\gram\per\kelvin}\right)}\approx1.211\times10^{-6}.
-\end{equation}
-
-We will see later on that this small $\alpha$ allows for higher values of $dt$.
-Note that even though this is being solved for in the vertical, we will consider the domain of ice as in the $x$-direction, where $x\in [0,L]$. $x=0$ will be the surface of the ice (the end exposed to the air), and $x=L$ will be the bottom of the ice (the end that is underwater).
+The consants used may be found in the appendix.
 
 
 
