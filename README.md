@@ -29,6 +29,8 @@ def ice_q(T):
     return (eps_R*e)/(p_a+e*(eps_R-1))
 ```
 
+There is also a function to calculate the total shortwave flux via solar radiation. The sunrise and sunset values (0700 and 2200, respectively) were estimated from picking some arbitrary day in early April and looking at the sunrise and sunset times (via timeanddate.com)
+
 
 The consants used may be found in the appendix.
 
