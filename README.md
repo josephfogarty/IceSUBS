@@ -14,9 +14,9 @@ We now describe our physical system and problem statement. We consider a block o
 
 ## Numerics of the Code
 
-As mentioned above, the domain for this ice block is 2 meters. Using a spatial mesh of 400 cells, we have a length of 5 mm between nodes. We set a dt of 0.5, however this number may be changed in the code.
+As mentioned above, the domain for this ice block is 2 meters. Using a spatial mesh of 400 cells, we have a length of 5 mm between nodes. We set a dt of 0.5 seconds, however this number may be changed in the code.
 
-The main numerical method utilized here is the Crank-Nicolson method, an implicit method that is second-order accurate in space and time. The Crank-Nicolson method gives rise to solving a sparse linear system every time step. The Python module `scipy.sparse` allows for quick iterations of solving these systems.
+The main numerical method utilized here is the Crank-Nicolson method, an implicit method that is second-order accurate in space and time. The Crank-Nicolson method gives rise to solving a sparse linear system every time step. The Python module `scipy.sparse` allows for quick iterations of solving these sparse linear systems.
 
 ## Models in the Code
 
