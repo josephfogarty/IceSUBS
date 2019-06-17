@@ -12,6 +12,24 @@ Collaborators:
 
 We now describe our physical system and problem statement. We consider a block of sea ice floating in the Arctic ocean that is 2 meters deep, with the top above the water and the bottom below the water. If we consider the temperature to be constant in the horizontal, then we are able to solve the 1D heat equation in the vertical for the temperature of the ice, giving a temperature profile of the ice block.
 
+There are a number of fluxes that occur on the bottom and top of this ice sheet. The figure below summarizes all of the fluxes.
+
+Inline-style: 
+![Sea Ice Flux Diagram](https://github.com/jjf1218/seaicecode/blob/master/img/seaicefluxes.jpg "Sea Ice Flux Diagram")
+
+### Top Fluxes
+
+Net Radiation: Composed of net shortwave and longwave fluxes. Net shortwave flux is simply the solar radiation in that is not reflected by the surface. Net longwave in is any longwave in not reflected by the flux. Net longwave out simply follows the Stefan-Boltzmann law.
+
+Sensible Heat Convection: 
+
+Latent Heat of Sublimation:
+
+Latent Heat of Evaporation: This is currently turned off in the model. We are assuming that the only process taking place at the surface is sublimation. However, it would be implemented the same as sublimation, the only change being in the latent heat capacity.
+
+
+### Bottom Fluxes
+
 ## Numerics of the Code
 
 As mentioned above, the domain for this ice block is 2 meters. Using a spatial mesh of 400 cells, we have a length of 5 mm between nodes. We set a dt of 0.5 seconds, however this number may be changed in the code.
@@ -22,7 +40,7 @@ The main numerical method utilized here is the Crank-Nicolson method, an implici
 
 There are a few models in the code based off of real-world observations and theory. These will eventually be replaced with actual, continuous observations, but for now, these models work well to crudely study the fluxes in sea ice.
 
-### Humidity
+### Humidity Equation
 
 First we define a function to calculate the specific humidity above ice (at a certain density) given a certain temperature:
 
@@ -34,7 +52,7 @@ def ice_q(T):
 ```
 This fucntion is based on the integrated Clausius-Calpeyron equation, using values for ice instead of water.
 
-### Solar Radiation
+### Solar Radiation Model
 
 There is also a function to calculate the total shortwave flux via solar radiation. The sunrise and sunset values (0700 and 2200, respectively) were estimated from picking some arbitrary day in early April and estimating the sunrise and sunset times (via timeanddate.com). A sinusoidal profile was then fit around this data.
 
@@ -53,7 +71,7 @@ def sw_net(t): #t is in seconds, so dt*i would be evaluated
     return shortwave_net
 ```
 
-### Air Temperature
+### Air Temperature Model
 
 We also set a crude model for air temperature. Daily maximum and minimum temperature data for Barrow, AK (retrieved from the [Alaska Climate Research Center](http://climate.gi.alaska.edu/AKweather/Index.html "AK Climate Research Center")) for April 6th (arbitrary date) was averaged for nearly 100 years of data, resulting in an average minimum and maximum. A sine curve was then fitted to these values to represent a 24-hour cycle.
 
