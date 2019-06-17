@@ -14,13 +14,17 @@ We now describe our physical system and problem statement. We consider a block o
 
 ## Numerics of the Code
 
-As mentioend above, the domain for this ice block is 2 meters. Using a spatial mesh of 400 cells, we have a length of 5 mm between nodes. We set a dt of 0.5, however this number may be changed in the code.
+As mentioned above, the domain for this ice block is 2 meters. Using a spatial mesh of 400 cells, we have a length of 5 mm between nodes. We set a dt of 0.5, however this number may be changed in the code.
 
 The main numerical method utilized here is the Crank-Nicolson method, an implicit method that is second-order accurate in space and time. The Crank-Nicolson method gives rise to solving a sparse linear system every time step. The Python module `scipy.sparse` allows for quick iterations of solving these systems.
 
 ## Models in the Code
 
-There are a few models in the code based off of real-world observations and theory. First we define a function to calculate the specific humidity above ice given a certain temperature:
+There are a few models in the code based off of real-world observations and theory. These will eventually be replaced with actual, continuous observations, but for now, these models work well to crudely study the fluxes in sea ice.
+
+### Humidity
+
+First we define a function to calculate the specific humidity above ice (at a certain density) given a certain temperature:
 
 ```python
 # Calculate q from T
@@ -28,11 +32,43 @@ def ice_q(T):
     e = 611*np.exp((Ls/R_v)*((1/273)-(1/T)))
     return (eps_R*e)/(p_a+e*(eps_R-1))
 ```
+This fucntion is based on the integrated Clausius-Calpeyron equation, using values for ice instead of water.
 
-There is also a function to calculate the total shortwave flux via solar radiation. The sunrise and sunset values (0700 and 2200, respectively) were estimated from picking some arbitrary day in early April and looking at the sunrise and sunset times (via timeanddate.com)
+### Solar Radiation
 
+There is also a function to calculate the total shortwave flux via solar radiation. The sunrise and sunset values (0700 and 2200, respectively) were estimated from picking some arbitrary day in early April and estimating the sunrise and sunset times (via timeanddate.com). A sinusoidal profile was then fit around this data.
 
-The consants used may be found in the appendix.
+```python
+#Function to calculate incoming solar value, starting at midnight
+def sw_net(t): #t is in seconds, so dt*i would be evaluated
+    t_hours = (t/3600.0)%24
+    if (t_hours) < 7 or (t_hours) > 22:
+        #print(f"hour = {(i*dt/(3600.0))%24}, dark")
+        sw_in = 0.0
+    else:
+        sw_in = 500*np.sin((np.pi/15.0)*(t_hours-7.0))
+        #print(f"hour = {(i*dt/(3600.0))%24}, light")
+        #print(f"sw_in = {sw_in}")
+    shortwave_net = (1-alpha)*sw_in; # net shortwave, W/m^2 
+    return shortwave_net
+```
 
+### Air Temperature
+
+We also set a crude model for air temperature. Daily maximum and minimum temperature data for Barrow, AK (retrieved from the [Alaska Climate Research Center](http://climate.gi.alaska.edu/AKweather/Index.html "AK Climate Research Center")) for April 6th (arbitrary date) was averaged for nearly 100 years of data, resulting in an average minimum and maximum. A sine curve was then fitted to these values to represent a 24-hour cycle.
+
+```python
+# Define function to calculate temperature based on time of day
+def air_temp(t): #t is in seconds, so dt*i would be evaluated
+    t_hours = (t/3600.0)%24
+    temp = 7.0*np.sin((np.pi/12.0)*(t_hours-13.0))+268
+    return temp
+```
+
+The consants used in all of these functions may be found in the first lines of code in `main.py`, and can be changed to your liking.
+
+## Animation Script
+
+The script `animator.py` takes teh output produced by the main code and creates an MPEG file of the time evolution of the temperature profile. It utilizes the `matplotlib` libraries `matplotlib.animation` as well as `matplotlib.pyplot`.
 
 
