@@ -14,19 +14,17 @@ We now describe our physical system and problem statement. We consider a block o
 
 There are a number of fluxes that occur on the bottom and top of this ice sheet. The figure below summarizes all of the fluxes.
 
-Inline-style: 
 ![Sea Ice Flux Diagram](https://github.com/jjf1218/seaicecode/blob/master/img/seaicefluxes.jpg "Sea Ice Flux Diagram")
 
 ### Top Fluxes
 
-Net Radiation: Composed of net shortwave and longwave fluxes. Net shortwave flux is simply the solar radiation in that is not reflected by the surface. Net longwave in is any longwave in not reflected by the flux. Net longwave out simply follows the Stefan-Boltzmann law.
+Net Radiation: The sum of net shortwave and longwave fluxes. Net shortwave flux is the solar radiation that is not reflected by the surface, which is described further in the model below. We are assuming no other outgoing shortwave from the surface. Incoming longwave is any longwave not emitted by the surface - this number is set to a constant in the model. Outgoing longwave simply follows the Stefan-Boltzmann law.
 
-Sensible Heat Convection: 
+Sensible Heat Convection: This represents the flux of heat into and out of the surface, depending on the temperature of the two mediums.
 
-Latent Heat of Sublimation:
+Latent Heat of Sublimation: This represents the amount of latent heat into and out of the surface, depending on if sublimation or deposition occurs at each time step.
 
 Latent Heat of Evaporation: This is currently turned off in the model. We are assuming that the only process taking place at the surface is sublimation. However, it would be implemented the same as sublimation, the only change being in the latent heat capacity.
-
 
 ### Bottom Fluxes
 
