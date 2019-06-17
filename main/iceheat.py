@@ -1,7 +1,7 @@
 #%% Ice Heat
 
 # 1D Heat Equation solver for block of ice floating on seawater using a
-# forward time centered space (FTCS) finite difference method
+# Crank-Nicolson method
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import optimize

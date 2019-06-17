@@ -32,9 +32,11 @@ with writer.saving(fig, f"main/figures/ice_solution_movie.mp4", 100):
     for i in range(len(loaded_matrix_cn)):
         print(f"%={i/len(loaded_matrix_cn):.4f}")
         y = loaded_matrix_cn[i]
-        plt.plot(x,y,'g')
+        plt.plot(y,x,'g')
         plt.title(f"Time Evolution of Heat Equation Solver - CN")
+        plt.xlabel("Temperature (K)")
+        plt.ylabel("Depth (m)")
         writer.grab_frame()
         plt.clf()
-print('\ncrank movie done')        
+print('\ncrank movie done') 
 
