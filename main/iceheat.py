@@ -62,7 +62,7 @@ def sw_net(t): #t is in seconds, so dt*i would be evaluated
     return shortwave_net
 # the initial value will thus be sw_net(0.0), evaluated below
 
-# Define function to calculate temperature based on time
+# Define function to calculate temperature based on time of day
 def air_temp(t): #t is in seconds, so dt*i would be evaluated
     t_hours = (t/3600.0)%24
     temp = 7.0*np.sin((np.pi/12.0)*(t_hours-13.0))+268
