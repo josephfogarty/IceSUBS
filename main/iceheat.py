@@ -12,7 +12,7 @@ import matplotlib as mpl
 mpl.rcParams.update(mpl.rcParamsDefault)
 
 #%% Constants in SI Units
-alpha = 0.3; # albedo
+alpha = 0.6; # albedo
 eps_ice = 0.96; # emissivity
 sigma = 5.67*10**(-8); # Stefan-Boltzmann constant, W/(m^2K^4) 
 lw_in = 200; # incoming longwave, W/m^2
