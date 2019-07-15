@@ -26,12 +26,33 @@ REAL :: q_a=0.0018, alpha_ice = kappa_ice/(c_pi*rho_i)
 
 
 
+!functions--------------
+! ice_q - calculates q from T over ice
+program testing_functions
+!This program test subroutines
+implicit none
+real ice_q
+print *, "Do these subroutines work?"
+print *, "The humidity over ice for T=273 is", ice_q(273.0)
+print *, "Bye!"
+end
+
+real function ice_q(T)
+  implicit none
+  REAL :: T, ei, q, Ai=3410000000000, Bi=6130, eps_R=
+  ei = Ai*exp((-1.0*Bi)/T)
+  q = (eps_R*e)/(p_a*(eps_R-1))
+  return
+end
+
+
+
 
 !--------------subroutines--------------
 ! ice_q - calculates q from T over ice
 subroutine ice_q(T)
   implicit none
-  real T, e, Ls, R_v, eps_R, p_a
+  REAL :: T, e, Ls, R_v, eps_R, p_a
 
   e = 611*exp((Ls/R_v)*((1/273)-(1/T))
   q = (eps_R*e)/(p_a*(eps_R-1))
@@ -43,4 +64,4 @@ end
 !-----------
 subroutine sw_net(t)
   implicit none
-  real :: t_hours = modulo(t/3600.0,24)
+  real :: t_hours = mod(t/3600.0,24)
