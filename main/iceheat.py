@@ -171,7 +171,7 @@ print("\na0=",a0,"\na1=",a1,"\na2=a3=0","\na4=",a4)
 print("The initial root is ",root)
 print("\n----------------------------")
 
-#%% Prepare plots anmd empty lists
+#%% Prepare plots and empty lists
 
 #Create an empty list for outputs and plots
 top_ice_temp_list = []
