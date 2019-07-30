@@ -7,8 +7,6 @@ from matplotlib.colors import ListedColormap
 
 cmap = ListedColormap(['xkcd:sky blue', 'xkcd:dark blue'])
 
-
-
 #define two rougnesses corresponding to ice/sea
 zo_ice = 0.0002
 zo_sea = 0.002
