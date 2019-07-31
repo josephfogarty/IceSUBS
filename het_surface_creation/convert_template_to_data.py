@@ -59,39 +59,39 @@ q_pond = liquid_q(T_pond)
 
 # Path of template matrix 
 filename = "checker2.dat"
-load_path = os.path.join("surfacefiles", filename)
+lp = os.path.join("surfacefiles", filename)
 
 # Path to save the matrix
-save_path = os.path.join("LES_ready")
+sp = os.path.join("LES_ready")
 
 # Load the template matrix
-master_sfc_template = np.loadtxt(load_path)
+master_sfc_template = np.loadtxt(lp)
 plt.matshow(master_sfc_template,cmap=cmap)
 
 #%% Filling in Data
 
-# Create the three matrices
-temp_sfc_matrix = master_sfc_template
-temp_sfc_matrix[temp_sfc_matrix == 1] = T_ice
-temp_sfc_matrix[temp_sfc_matrix == 2] = T_sea
-temp_sfc_matrix[temp_sfc_matrix == 3] = T_pond
-print(np.unique(temp_sfc_matrix))
+# Create the temp matrix
+temp_sfc = np.loadtxt(lp)
+temp_sfc[temp_sfc == 1] = T_ice
+temp_sfc[temp_sfc == 2] = T_sea
+temp_sfc[temp_sfc == 3] = T_pond
+print(np.unique(temp_sfc))
 
-# Create temperature matrix
-zo_sfc_matrix = master_sfc_template
-zo_sfc_matrix[zo_sfc_matrix == 1] = zo_ice
-zo_sfc_matrix[zo_sfc_matrix == 2] = zo_sea
-zo_sfc_matrix[zo_sfc_matrix == 3] = zo_pond
-print(np.unique(zo_sfc_matrix))
+# Create roughness matrix
+zo_sfc = np.loadtxt(lp)
+zo_sfc[zo_sfc == 1] = zo_ice
+zo_sfc[zo_sfc == 2] = zo_sea
+zo_sfc[zo_sfc == 3] = zo_pond
+print(np.unique(zo_sfc))
 
 # Create humidity matrix
-q_sfc_matrix = master_sfc_template
-q_sfc_matrix[q_sfc_matrix == 1] = q_ice
-q_sfc_matrix[q_sfc_matrix == 2] = q_sea
-q_sfc_matrix[q_sfc_matrix == 3] = q_pond
-print(np.unique(q_sfc_matrix))
+q_sfc = np.loadtxt(lp)
+q_sfc[q_sfc == 1] = q_ice
+q_sfc[q_sfc == 2] = q_sea
+q_sfc[q_sfc == 3] = q_pond
+print(np.unique(q_sfc))
 
 # Save the matrices
-np.savetxt(os.path.join(save_path, "temp_remote.dat"), temp_sfc_matrix, delimiter=' ',fmt='%1.3f')
-np.savetxt(os.path.join(save_path, "zo_remote.dat"), zo_sfc_matrix, delimiter=' ',fmt='%1.3f')
-np.savetxt(os.path.join(save_path, "q_remote.dat"), q_sfc_matrix, delimiter=' ',fmt='%1.3f')
+np.savetxt(os.path.join(sp, "temp_remote.dat"), temp_sfc, delimiter=' ',fmt='%E')
+np.savetxt(os.path.join(sp, "zo_remote.dat"), zo_sfc, delimiter=' ',fmt='%E')
+np.savetxt(os.path.join(sp, "q_remote.dat"), q_sfc, delimiter=' ',fmt='%E')
