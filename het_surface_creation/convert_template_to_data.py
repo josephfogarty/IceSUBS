@@ -58,7 +58,7 @@ q_pond = liquid_q(T_pond)
 #%% Loading Data
 
 # Path of template matrix 
-filename = "checker2.txt"
+filename = "halfandhalf.txt"
 lp = os.path.join("surfacefiles", filename)
 
 # Path to save the matrix
@@ -93,5 +93,5 @@ print(np.unique(q_sfc))
 
 # Save the matrices
 np.savetxt(os.path.join(sp, "T_s_remote_ice.txt"), temp_sfc, delimiter=' ',fmt='%E')
-np.savetxt(os.path.join(sp, "zo_s_remote_ice.txt"), zo_sfc, delimiter=' ',fmt='%E')
+np.savetxt(os.path.join(sp, "zo_remote_ice.txt"), zo_sfc, delimiter=' ',fmt='%E')
 np.savetxt(os.path.join(sp, "q_s_remote_ice.txt"), q_sfc, delimiter=' ',fmt='%E')
