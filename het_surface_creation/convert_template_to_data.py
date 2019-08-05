@@ -92,6 +92,6 @@ q_sfc[q_sfc == 3] = q_pond
 print(np.unique(q_sfc))
 
 # Save the matrices
-np.savetxt(os.path.join(sp, "T_s_remote_ice.txt"), temp_sfc, delimiter=' ',fmt='%E')
-np.savetxt(os.path.join(sp, "zo_remote_ice.txt"), zo_sfc, delimiter=' ',fmt='%E')
-np.savetxt(os.path.join(sp, "q_s_remote_ice.txt"), q_sfc, delimiter=' ',fmt='%E')
+np.savetxt(os.path.join(sp, "T_s_remote_ice.txt"), temp_sfc, delimiter=' ', newline=os.linesep, fmt='%E')
+np.savetxt(os.path.join(sp, "zo_remote_ice.txt"), zo_sfc, delimiter=' ', newline=os.linesep, fmt='%E')
+np.savetxt(os.path.join(sp, "q_s_remote_ice.txt"), q_sfc, delimiter=' ', newline=os.linesep, fmt='%E')
