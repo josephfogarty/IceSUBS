@@ -39,10 +39,10 @@ surfacechecker8 = np.concatenate((surface1, surface2, surface1, surface2))
 surfacechecker8 = np.concatenate((surfacechecker8, surfacechecker8))
 
 # Write all surface template arrays to files
-np.savetxt(f'surfacefiles/halfandhalf.dat', surface, delimiter=' ',fmt='% 4d')
-np.savetxt(f'surfacefiles/checker2.dat', surfacechecker2, delimiter=' ',fmt='% 4d')
-np.savetxt(f'surfacefiles/checker4.dat', surfacechecker4, delimiter=' ',fmt='% 4d')
-np.savetxt(f'surfacefiles/checker8.dat', surfacechecker8, delimiter=' ',fmt='% 4d')
+np.savetxt(f'surfacefiles/halfandhalf.txt', surface, delimiter=' ',fmt='% 4d')
+np.savetxt(f'surfacefiles/checker2.txt', surfacechecker2, delimiter=' ',fmt='% 4d')
+np.savetxt(f'surfacefiles/checker4.txt', surfacechecker4, delimiter=' ',fmt='% 4d')
+np.savetxt(f'surfacefiles/checker8.txt', surfacechecker8, delimiter=' ',fmt='% 4d')
 
 # Visualize the checkerboards
 plt.matshow(surface,cmap=cmap)
