@@ -28,13 +28,13 @@ def ice_q(T):
 def liquid_q(T):
     
     # Atmospheric properties
-    Ls = 2834000.0 # latent heat of sublimation, J/kg
+    Lv = 2260000.0 # latent heat of evaporation, J/kg
     R_v = 461.5 # water vapor gas constant, J/(kgK)
     eps_R = 0.6218851571 # ratio of gas constants
     p_a = 101325.0 # air pressure, Pa
     
     # Calculate vapor pressure and specific humidity over ice
-    e = 611*np.exp((Ls/R_v)*((1/273)-(1/T)))
+    e = 611*np.exp((Lv/R_v)*((1/273)-(1/T)))
     q = (eps_R*e)/(p_a+e*(eps_R-1))
     return q
 
@@ -58,7 +58,7 @@ q_pond = liquid_q(T_pond)
 #%% Loading Data
 
 # Path of template matrix 
-filename = "checker2.txt"
+filename = "halfandhalf.txt"
 lp = os.path.join("surfacefiles", filename)
 
 # Path to save the matrix
