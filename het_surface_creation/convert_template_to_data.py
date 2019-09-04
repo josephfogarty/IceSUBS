@@ -58,15 +58,21 @@ q_pond = liquid_q(T_pond)
 #%% Loading Data
 
 # Path of template matrix 
-filename = "halfandhalf.txt"
-lp = os.path.join("surfacefiles", filename)
+filename = "esiber_2000jul28a_3c.out"
+lp = os.path.join("ice_maps","without_ponds", filename)
 
 # Path to save the matrix
 sp = os.path.join("LES_ready")
 
 # Load the template matrix
 master_sfc_template = np.loadtxt(lp)
+master_sfc_template = master_sfc_template[:192,:192]
 plt.matshow(master_sfc_template,cmap=cmap)
+
+# information about statistics of the map
+unique, counts = np.unique(master_sfc_template, return_counts=True)
+percentage_dict = dict(zip(unique, counts*100/master_sfc_template.size))
+print(f"\nStatistics for this loaded matrix: {str(percentage_dict)}")
 
 #%% Filling in Data
 
