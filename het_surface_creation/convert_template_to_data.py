@@ -5,10 +5,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
+from matplotlib.colors import BoundaryNorm
 import os
 
-# Colormap properties for ice and water
-cmap = ListedColormap(['xkcd:sky blue', 'xkcd:dark blue'])
+# Colormap properties for ice, water, and pond
+cmap = ListedColormap(['xkcd:off white', 'xkcd:midnight blue', 'xkcd:cyan'])
+bounds = [0.5,1.5,2.5,3.5]
+norm = BoundaryNorm(bounds,cmap.N)
 
 # To convert temp of ice to specific humidity
 def ice_q(T):
@@ -38,8 +41,6 @@ def liquid_q(T):
     q = (eps_R*e)/(p_a+e*(eps_R-1))
     return q
 
-#%% Defining parameters
-
 # Define rougnesses corresponding to surface type
 zo_ice = 0.0002
 zo_sea = 0.002
@@ -57,17 +58,30 @@ q_pond = liquid_q(T_pond)
 
 #%% Loading Data
 
-# Path of template matrix 
-filename = "esiber_2000jul28a_3c.out"
-lp = os.path.join("ice_maps","without_ponds", filename)
+# Path of template matrix - choose path and with/without ponding
+filename = "esiber_200jul28a_3c.out"
+pond_list = ["without_ponds", "with_ponds"]
+ponding = pond_list[0]
 
-# Path to save the matrix
-sp = os.path.join("LES_ready")
+# Path of template matrix
+lp = os.path.join("ice_maps", ponding, filename)
+
+# Path to save the matrix for LES
+sp_les = os.path.join("LES_ready")
+
+# path to save the images of maps or patterns
+sp_img = os.path.join("img", "icemaps")
 
 # Load the template matrix
 master_sfc_template = np.loadtxt(lp)
-master_sfc_template = master_sfc_template[:192,:192]
-plt.matshow(master_sfc_template,cmap=cmap)
+master_sfc_template = master_sfc_template[:192,:192] # set the size
+plt.matshow(master_sfc_template,cmap=cmap) # matshow
+
+# save the map as an image for presentations
+plt.imshow(master_sfc_template, cmap=cmap,norm=norm)
+plt.axis('off')
+plt.title(filename[:-4] + " - resampled & filled")
+plt.savefig(os.path.join(sp_img, filename[:-4] + "_" + ponding), bbox_inches='tight')
 
 # information about statistics of the map
 unique, counts = np.unique(master_sfc_template, return_counts=True)
@@ -98,9 +112,9 @@ q_sfc[q_sfc == 3] = q_pond
 print(np.unique(q_sfc))
 
 # Save the matrices
-np.savetxt(os.path.join(sp, "T_s_remote_ice.txt"), temp_sfc, delimiter=' ', fmt='%E')
-np.savetxt(os.path.join(sp, "zo_remote_ice.txt"), zo_sfc, delimiter=' ', fmt='%E')
-np.savetxt(os.path.join(sp, "q_s_remote_ice.txt"), q_sfc, delimiter=' ', fmt='%E')
+np.savetxt(os.path.join(sp_les, "T_s_remote_ice.txt"), temp_sfc, delimiter=' ', fmt='%E')
+np.savetxt(os.path.join(sp_les, "zo_remote_ice.txt"), zo_sfc, delimiter=' ', fmt='%E')
+np.savetxt(os.path.join(sp_les, "q_s_remote_ice.txt"), q_sfc, delimiter=' ', fmt='%E')
 
 # Finish
 print("Three templates created!")
