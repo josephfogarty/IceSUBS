@@ -59,9 +59,9 @@ q_pond = liquid_q(T_pond)
 #%% Loading Data
 
 # Path of template matrix - choose path and with/without ponding
-filename = "esiber_200jul28a_3c.out"
+filename = "beaufo_2000aug31a_3c.out"
 pond_list = ["without_ponds", "with_ponds"]
-ponding = pond_list[0]
+ponding = pond_list[1]
 
 # Path of template matrix
 lp = os.path.join("ice_maps", ponding, filename)
