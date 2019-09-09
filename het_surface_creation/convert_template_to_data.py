@@ -59,7 +59,7 @@ q_pond = liquid_q(T_pond)
 #%% Loading Data
 
 # Path of template matrix - choose path and with/without ponding
-filename = "beaufo_2000aug31a_3c.out"
+filename = "cafram_2000aug07a_2c.out"
 pond_list = ["without_ponds", "with_ponds"]
 ponding = pond_list[1]
 
