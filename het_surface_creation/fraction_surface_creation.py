@@ -26,8 +26,8 @@ Nx = 192
 Ny = Nx
 
 # put in fractions (in percent)
-frac_ice = 84.17
-frac_sea = 15.83
+frac_ice = 24.76
+frac_sea = 75.24
 frac_pond = 0
 
 # create cutoff indices
