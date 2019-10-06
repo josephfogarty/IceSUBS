@@ -1,8 +1,5 @@
-# -*- coding: utf-8 -*-
 """
-Created on Fri Oct  4 10:33:00 2019
-
-@author: jf38
+A code to take a numpy array and "shuffle" the values
 """
 
 import numpy as np
@@ -34,7 +31,6 @@ def shuffle(arr, n_sections):
                 arr[rand_i*size:(rand_i+1)*size, rand_j*size:(rand_j+1)*size]
 
     return new_arr
-
 
 result = shuffle(arr, 5)
 

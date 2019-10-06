@@ -2,11 +2,10 @@
 
 # import needed modules
 import numpy as np
-import matplotlib.pyplot as plt
 import os
 
 # load path for the template
-lp = os.path.join("ice_maps","without_ponds","beaufo_2000aug31a_3c.out")
+lp = os.path.join("array_text_files","observed_ice_maps","without_ponds","beaufo_2000aug31a_3c.out")
 
 arr = np.loadtxt(lp)
 

@@ -26,8 +26,8 @@ Nx = 192
 Ny = Nx
 
 # put in fractions (in percent)
-frac_ice = 24.76
-frac_sea = 75.24
+frac_ice = 25
+frac_sea = 75
 frac_pond = 0
 
 # create cutoff indices
@@ -42,11 +42,16 @@ if float(frac_pond) != 0.0:
 
 arr = np.pad(arr, pad_width=1, mode='constant', constant_values=-80)
 
-plt.imshow(arr, cmap=cmap,norm=norm)
-plt.axis('off')
+
+fig = plt.figure(figsize = (6,6))
+#ax1 = fig.add_subplot(1,2,1)
+plt.imshow(arr,cmap=cmap,norm=norm)
+
+#plt.imshow(arr, cmap=cmap,norm=norm)
+#plt.axis('off')
 plt.title(f"Fraction of Ice ({frac_ice}%), Sea ({frac_sea}%), and Pond ({frac_pond}%)")
-filename = f"ice_{round(frac_ice)}_sea_{round(frac_sea)}_pond_{round(frac_pond)}.png"
-plt.savefig(os.path.join("img","patterns",filename), bbox_inches='tight')
+filename = f"ice_{round(frac_ice)}_sea_{round(frac_sea)}_pond_{round(frac_pond)}.jpg"
+plt.savefig(os.path.join("img","ideal_patterns",filename), bbox_inches='tight')
 
 
 
