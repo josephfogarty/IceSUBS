@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
 """
-Created on Thu Sep 19 21:41:02 2019
-
-@author: jf38
+This script will take an existing ice map of a certain dimension 
+and create an "ideal" fractional map with all of the ice and all of
+the ocean in "bands," e.g. |ice(75%)|ocean(25%)|
 """
 
 import numpy as np
@@ -22,7 +21,7 @@ sea = 2
 pond = 3
 
 #shape
-Nx = 192
+Nx = 64
 Ny = Nx
 
 # put in fractions (in percent)
@@ -32,26 +31,28 @@ frac_pond = 0
 
 # create cutoff indices
 cutoff_index_sea_pond = Nx - int(((frac_sea + frac_pond)/100.0)*Nx)
-
 cutoff_index_pond = Nx - (frac_pond/100.0)*Nx
 
+# create the array
 arr = np.full((Nx,Ny),ice)
 arr[:,cutoff_index_sea_pond:] = sea
 if float(frac_pond) != 0.0:
     arr[:,cutoff_index_pond:] = pond
 
-arr = np.pad(arr, pad_width=1, mode='constant', constant_values=-80)
+#save path
+sp = os.path.join("array_text_files","ideal_patterns", "beaufo_2000_aug31.txt")
+np.savetxt(sp, arr)
 
+#create a padded array for a picture
+arr_pad = np.pad(arr, pad_width=1, mode='constant', constant_values=-80)
 
+# plot and save the map
 fig = plt.figure(figsize = (6,6))
-#ax1 = fig.add_subplot(1,2,1)
 plt.imshow(arr,cmap=cmap,norm=norm)
-
-#plt.imshow(arr, cmap=cmap,norm=norm)
-#plt.axis('off')
 plt.title(f"Fraction of Ice ({frac_ice}%), Sea ({frac_sea}%), and Pond ({frac_pond}%)")
 filename = f"ice_{round(frac_ice)}_sea_{round(frac_sea)}_pond_{round(frac_pond)}.jpg"
 plt.savefig(os.path.join("img","ideal_patterns",filename), bbox_inches='tight')
+
 
 
 
