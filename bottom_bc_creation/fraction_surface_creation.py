@@ -39,20 +39,33 @@ arr[:,cutoff_index_sea_pond:] = sea
 if float(frac_pond) != 0.0:
     arr[:,cutoff_index_pond:] = pond
 
+#transpose it
+arr_trans = arr.T
+
 #save path
 sp = os.path.join("array_text_files","ideal_patterns", "beaufo_2000_aug31.txt")
+sp_trans = os.path.join("array_text_files","ideal_patterns", "beaufo_2000_aug31_TRANS.txt")
 np.savetxt(sp, arr)
+np.savetxt(sp_trans, arr_trans)
 
 #create a padded array for a picture
-arr_pad = np.pad(arr, pad_width=1, mode='constant', constant_values=-80)
+#arr_pad = np.pad(arr, pad_width=1, mode='constant', constant_values=-80)
+#arr_pad_trans = np.pad(arr_trans, pad_width=1, mode='constant', constant_values=-80)
 
-# plot and save the map
+# plot and save the map and it's transpose
 fig = plt.figure(figsize = (6,6))
 plt.imshow(arr,cmap=cmap,norm=norm)
 plt.title(f"Fraction of Ice ({frac_ice}%), Sea ({frac_sea}%), and Pond ({frac_pond}%)")
 filename = f"ice_{round(frac_ice)}_sea_{round(frac_sea)}_pond_{round(frac_pond)}.jpg"
 plt.savefig(os.path.join("img","ideal_patterns",filename), bbox_inches='tight')
+plt.close()
 
-
+# now the transpose
+fig_trans = plt.figure(figsize = (6,6))
+plt.imshow(arr_trans,cmap=cmap,norm=norm)
+plt.title(f"Fraction of Ice ({frac_ice}%), Sea ({frac_sea}%), and Pond ({frac_pond}%)")
+filename = f"ice_{round(frac_ice)}_sea_{round(frac_sea)}_pond_{round(frac_pond)}_TRANS.jpg"
+plt.savefig(os.path.join("img","ideal_patterns",filename), bbox_inches='tight')
+plt.close()
 
 

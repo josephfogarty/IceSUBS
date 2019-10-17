@@ -60,11 +60,13 @@ q_pond = liquid_q(T_pond)
 
 # Path of template matrix - choose path and with/without ponding
 filename = "beaufo_2000aug31a_3c_64x64.out"
-sub_list = ["without_ponds", "with_ponds", "low_reso"]
-ponding = sub_list[2]
+#sub_list = ["without_ponds", "with_ponds", "low_reso"]
+#ponding = sub_list[2]
 
 # Path of template matrix
-lp = os.path.join("array_text_files", "observed_ice_maps", ponding, filename)
+lp = os.path.join("array_text_files",
+                  "ideal_patterns",
+                  "beaufo_2000_aug31_TRANS.txt")
 
 # Path to save the matrix for LES
 sp_les = os.path.join("LES_ready")
@@ -78,10 +80,10 @@ master_sfc_template = master_sfc_template[:192,:192] # set the size
 plt.matshow(master_sfc_template,cmap=cmap) # matshow
 
 # save the map as an image for presentations
-plt.imshow(master_sfc_template, cmap=cmap,norm=norm)
-plt.axis('off')
-plt.title(filename[:-4] + " - resampled & filled")
-plt.savefig(os.path.join(sp_img, filename[:-4] + "_" + ponding + "_for_LES"), bbox_inches='tight')
+#plt.imshow(master_sfc_template, cmap=cmap,norm=norm)
+#plt.axis('off')
+#plt.title(filename[:-4] + " - resampled & filled")
+#plt.savefig(os.path.join(sp_img, filename[:-4] + "_" + ponding + "_for_LES"), bbox_inches='tight')
 
 # information about statistics of the map
 unique, counts = np.unique(master_sfc_template, return_counts=True)
