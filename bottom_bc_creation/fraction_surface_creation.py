@@ -25,8 +25,8 @@ Nx = 64
 Ny = Nx
 
 # put in fractions (in percent)
-frac_ice = 25
-frac_sea = 75
+frac_ice = 50
+frac_sea = 50
 frac_pond = 0
 
 # create cutoff indices
@@ -44,7 +44,7 @@ arr_trans = arr.T
 
 #save path
 sp = os.path.join("array_text_files","ideal_patterns", "beaufo_2000_aug31.txt")
-sp_trans = os.path.join("array_text_files","ideal_patterns", "beaufo_2000_aug31_TRANS.txt")
+sp_trans = os.path.join("array_text_files","ideal_patterns", "beaufo_2000_aug31_trans.txt")
 np.savetxt(sp, arr)
 np.savetxt(sp_trans, arr_trans)
 

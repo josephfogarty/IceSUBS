@@ -56,6 +56,8 @@ q_ice = ice_q(T_ice)
 q_sea = liquid_q(T_sea)
 q_pond = liquid_q(T_pond)
 
+# DONT TOUCH ANYTHING ABOVE HERE
+# unless you are changing sea ice/ocean parameters
 #%% Loading Data
 
 # Path of template matrix - choose path and with/without ponding
@@ -66,17 +68,17 @@ filename = "beaufo_2000aug31a_3c_64x64.out"
 # Path of template matrix
 lp = os.path.join("array_text_files",
                   "ideal_patterns",
-                  "beaufo_2000_aug31_TRANS.txt")
+                  "beaufo_2000_aug31.txt")
 
 # Path to save the matrix for LES
-sp_les = os.path.join("LES_ready")
+sp_les = os.path.join("LES_ready","half_patterns")
 
 # path to save the images of maps or patterns
 sp_img = os.path.join("img", "observed_ice_maps")
 
 # Load the template matrix
 master_sfc_template = np.loadtxt(lp)
-master_sfc_template = master_sfc_template[:192,:192] # set the size
+master_sfc_template = master_sfc_template[:64,:64] # set the size
 plt.matshow(master_sfc_template,cmap=cmap) # matshow
 
 # save the map as an image for presentations
@@ -90,7 +92,7 @@ unique, counts = np.unique(master_sfc_template, return_counts=True)
 percentage_dict = dict(zip(unique, counts*100/master_sfc_template.size))
 print(f"\nStatistics for this loaded matrix: {str(percentage_dict)}")
 
-#%% Filling in Data
+#%% Filling in Data - DONT TOUCH ANYTHING BELOW HERE
 
 # Create the temp matrix
 temp_sfc = np.loadtxt(lp)
