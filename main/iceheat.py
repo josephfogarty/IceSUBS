@@ -378,3 +378,55 @@ plt.tight_layout()
 plt.grid()
 plt.savefig("figures/surface_and _air_temp_temporal.png")
 plt.close()
+
+#%% for POSTEr
+
+
+#Radiation budget
+
+plt.rcParams.update({'font.size': 28}) # smaller font for smaller fig
+fig1d, ax1d = plt.subplots(figsize=(15,11))
+ax1d.axhline(y=0, color='k')
+ax1d.axvline(x=0, color='k')
+ax1d.plot(time_hours,lw_in_list,label=r"$LW_{in}$")
+ax1d.plot(time_hours,lw_out_list,label=r"$LW_{out}$")
+ax1d.plot(time_hours,sw_net_list,label=r"$SW_{net}$")
+ax1d.plot(time_hours,rad_net_list,label=r"$R_{net}$")
+ax1d.set_title(r"$R_{net}$ Diurnal Evolution")
+ax1d.set_ylabel(r'$R$ (W m$^{-2}$)')
+ax1d.set_xlabel(r'$t$ (hr)')
+
+plt.rcParams.update({'font.size': 24}) # smaller font for smaller fig
+ax1d.legend(loc='best')
+ax1d.grid()
+plt.show()
+
+#%%
+
+title_top_rad=f"Time Evolution of Top Radiative Fluxes after {t_days:.2f} days"
+plt.plot(time_hours,lw_in_list,label="Longwave In Flux")
+plt.plot(time_hours,lw_out_list,label="Longwave Out Flux")
+plt.plot(time_hours,sw_net_list,label="Shortwave Net Flux")
+plt.plot(time_hours,rad_net_list,label="Total Net Radiative Flux")
+plt.title(title_top_rad)
+plt.ylabel('Flux (W m**-2)')
+plt.xlabel("Time (hr)")
+plt.grid()
+
+plt.legend()
+plt.tight_layout()
+plt.savefig("figures/poster_radiative_fluxes_temporal.png")
+plt.close()
+
+#Surface temp and air temp comparison
+title_T_it=f"Surface and Air Temperature Evolution after {t_days:.2f} days"
+plt.plot(time_hours,top_ice_temp_list,label="Top of Ice Surface Temperature")
+plt.plot(time_hours,air_temp_list,label="Air Temperature")
+plt.title(title_T_it)
+plt.xlabel("Time (hr)")
+plt.ylabel('Temperature (K)')
+plt.legend()
+plt.tight_layout()
+plt.grid()
+plt.savefig("figures/poster_surface_and _air_temp_temporal.png")
+plt.close()
