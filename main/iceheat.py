@@ -3,13 +3,10 @@
 # 1D Heat Equation solver for block of ice floating on seawater using a
 # Crank-Nicolson method
 import numpy as np
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 from scipy import optimize
 from scipy import sparse
 #from scipy.sparse import linalg, diags
-
-import matplotlib as mpl
-mpl.rcParams.update(mpl.rcParamsDefault)
 
 #%% Constants in SI Units
 alpha = 0.6; # albedo
@@ -79,7 +76,7 @@ x = np.linspace(0.0,L,n+1);
 
 # Time parameters
 dt = 0.5; # time between iterations, in seconds
-nt = 100000; # amount of iterations
+nt = 1000; # amount of iterations
 t_days = (dt*nt)/86400.0
 
 # Calculate r, want ~0.25, must be < 0.5
@@ -94,7 +91,7 @@ diff_time_scale = (float(L**2))/(alpha_ice) #in seconds
 
 #%% CN Scheme set up
 
-#create sprase matrices
+#create sprase matrices in "lil" format for easy manipulating
 A = sparse.diags([-r, 1+2*r, -r], [-1, 0, 1], shape = (n+1,n+1),format='lil')
 B = sparse.diags([r, 1-2*r, r], [-1, 0, 1], shape = (n+1,n+1),format='lil')
 
@@ -151,18 +148,7 @@ a2 = 0;
 a3 = 0;
 a4 = (-1.0*sigma*eps_ice);
 
-##Plot this to see what it looks like
-#p = np.poly1d([a4, a3, a2, a1, a0])
-#x_test = np.linspace(0,1000,1001)
-#y_test = p(x_test)
-#plt.plot(x_test, y_test)
-#plt.title("Initial Curve of Top of Ice Polynomial")
-#plt.xlabel("Temperature (K)")
-#plt.ylabel("Flux (W m**-2)")
-#plt.axhline("0",linewidth=1, color="k")
-#plt.show()
-
-#Let's calculate the initial root
+# calculate the initial root
 def top_ice_flux_init(x):
     return a0 + a1*x + a4*(x**4)
 root = optimize.newton(top_ice_flux_init, float(u[0]))
@@ -195,6 +181,7 @@ thickness_loss_top_list = ["thickness_loss_top"]
 thickness_loss_bottom_list = ["thickness_loss_bottom"]
 
 #%% Start Iteration
+
 for i in range(0,nt):
     
     # run through the CN scheme for interior points
@@ -203,13 +190,17 @@ for i in range(0,nt):
     # force to be column vector
     u.shape = (len(u),1)
     
-    # append this array to solution file
-    if (i*dt)%120 == 0: #every 60 seconds
+    # append this array to solution file every 60 seconds
+    if (i*dt)%120 == 0:
         u_soln = np.append(u_soln, u, axis=1)    
     
     # update values of the top EB polynomial (only a0 and a1 change)    
-    a0 = sw_net(i*dt)+lw_in*(1-eps_ice)+(rho_a*u_star_top)*((c_pa*c_h*air_temp(i*dt)) \
-                +(Ls*c_h*(q_a-ice_q(float(u[0])))))+(kappa_ice*(float(u[1]))/dx);
+    a0 = sw_net(i*dt) #SW
+    + lw_in*(1-eps_ice) # LW
+    + (rho_a*u_star_top)*((c_pa*c_h*air_temp(i*dt))
+    + (Ls*c_h*(q_a-ice_q(float(u[0])))))
+    + (kappa_ice*(float(u[1]))/dx);
+    
     def top_ice_flux(x):
         return a0 + a1*x + a4*(x**4)
     
@@ -256,14 +247,11 @@ for i in range(0,nt):
     T5_list.append(float(u[1]))
     air_temp_list.append(air_temp(i*dt))
     top_ice_temp_list.append(root)
-    
     Lf_b_list.append(Lf_b)
     H_b_list.append(H_b)
     G_b_list.append(G_b)
-    
     top_flux_sum_list.append(top_flux_sum)
     bottom_flux_sum_list.append(bottom_flux_sum)
-    
     mass_loss_top_list.append(mass_loss_top)
     mass_loss_bottom_list.append(mass_loss_bottom)
     thickness_loss_top_list.append(mass_loss_top/rho_i)
@@ -271,29 +259,35 @@ for i in range(0,nt):
 
 # write the solution matrix to a file
 u_soln = u_soln.transpose()
-np.savetxt(f"solutions/ice_solver_{n+1}nodes.txt",u_soln, fmt = '%.10f',delimiter=' ')
+np.savetxt(f"solutions/ice_solver_{n+1}nodes_{nt}tsteps.txt",u_soln,fmt='%.10f',delimiter=' ')
 
-#combine all other 1D temporal values in lists from above
-master_fluxes_array = np.vstack((sw_net_list,lw_in_list,lw_out_list,
-                                 rad_net_list,H_t_list,Ls_t_list,
-                                 G_t_list, T5_list,air_temp_list,
-                                 top_ice_temp_list,Lf_b_list,H_b_list,
-                                 G_b_list, top_flux_sum_list,
-                                 bottom_flux_sum_list, mass_loss_bottom_list,
-                                 mass_loss_top_list, thickness_loss_top_list,
-                                 thickness_loss_bottom_list))
+# create dimensional time array (in seconds, can convert later)
+time_list = [nt * dt for nt in range(1,nt+1)]
+time_list.insert(0,"t_dim")
 
+# combine all other 1D temporal values in lists from above
+master_fluxes_array = np.column_stack((time_list, sw_net_list, lw_in_list,
+                                       lw_out_list, rad_net_list, H_t_list,
+                                       Ls_t_list, G_t_list, T5_list,
+                                       air_temp_list, top_ice_temp_list,
+                                       Lf_b_list, H_b_list, G_b_list,
+                                       top_flux_sum_list,
+                                       bottom_flux_sum_list,
+                                       mass_loss_bottom_list,
+                                       mass_loss_top_list,
+                                       thickness_loss_top_list,
+                                       thickness_loss_bottom_list))
+# save the matrix of components as CSV
+np.savetxt(f"solutions/fluxes_{n+1}nodes_{nt}tsteps.csv",master_fluxes_array,
+           fmt='%s',delimiter=',')
 
 ##%% Some temporal output
 #
 ##colors
 #bluecol = 'tab:blue'
 #redcol = 'tab:red'
-#
-##Create Time Array
-#time_list = dt*(np.array(list(range(1,nt+1)))) #in seconds, can convert later
-#time_hours = time_list/3600.0
-#
+
+
 ##Bottom Fluxes
 #title_bottom = f"Time Evolution of Bottom Fluxes after {t_days:.2f} days"
 #plt.plot(time_hours,Lf_b_list,label="Latent Heat (f) Flux")
