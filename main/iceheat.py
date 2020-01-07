@@ -41,9 +41,9 @@ alpha_ice = (kappa_ice)/(c_pi*rho_i); # thermal diffusivity of ice, m^2/s
 
 # Calculate q from T
 def ice_q(T):
-    e = 611*np.exp((Ls/R_v)*((1/273)-(1/T)))
-    return (eps_R*e)/(p_a+e*(eps_R-1))
-
+    e = 611*np.exp((Ls/R_v)*((1.0/273.0)-(1.0/T)))
+    q = (eps_R*e)/(p_a+e*(eps_R-1))
+    return q
 
 #Function to calculate incoming solar value, starting at midnight
 def sw_net(t): #t is in seconds, so dt*i would be evaluated
@@ -76,7 +76,7 @@ x = np.linspace(0.0,L,n+1);
 
 # Time parameters
 dt = 0.5; # time between iterations, in seconds
-nt = 1000; # amount of iterations
+nt = 1500000; # amount of iterations
 t_days = (dt*nt)/86400.0
 
 # Calculate r, want ~0.25, must be < 0.5
@@ -127,6 +127,7 @@ rhs = B.dot(u)
 
 #set initial conditions to the matrix as the first row
 u_soln = u
+minute_list = [0]
 
 #%% Initial Fluxes - this section returns values of coefficients and fluxes
 
@@ -167,18 +168,19 @@ lw_in_list = ["LW_in"]
 lw_out_list = ["LW_out"]
 rad_net_list = ["R_net"]
 H_t_list = ["H_t"]
-Ls_t_list = ["LS_t"]
+Ls_t_list = ["Ls_t"]
 G_t_list = ["G_t"]
 T5_list = ["T_5mm"]
 H_b_list = ["H_b"]
 G_b_list = ["G_b"]
-Lf_b_list = ["Lf-b"]
+Lf_b_list = ["Lf_b"]
 top_flux_sum_list = ["top_flux_sum"]
 bottom_flux_sum_list = ["bottom_flux_sum"]
 mass_loss_bottom_list = ["mass_loss_bottom"]
 mass_loss_top_list = ["mass_loss_top"]
 thickness_loss_top_list = ["thickness_loss_top"]
 thickness_loss_bottom_list = ["thickness_loss_bottom"]
+
 
 #%% Start Iteration
 
@@ -190,16 +192,14 @@ for i in range(0,nt):
     # force to be column vector
     u.shape = (len(u),1)
     
-    # append this array to solution file every 60 seconds
-    if (i*dt)%120 == 0:
-        u_soln = np.append(u_soln, u, axis=1)    
+    # append this array to solution file every 120 seconds
+    if (i*dt)%120 == 0 and (i != 0):
+        u_soln = np.append(u_soln, u, axis=1)
+        minute_list.append((i*dt/60.0))
     
-    # update values of the top EB polynomial (only a0 and a1 change)    
-    a0 = sw_net(i*dt) #SW
-    + lw_in*(1-eps_ice) # LW
-    + (rho_a*u_star_top)*((c_pa*c_h*air_temp(i*dt))
-    + (Ls*c_h*(q_a-ice_q(float(u[0])))))
-    + (kappa_ice*(float(u[1]))/dx);
+    # update values of the top EB polynomial (only a0 changes)    
+    a0 = sw_net(i*dt)+lw_in*(1-eps_ice)+(rho_a*u_star_top)*((c_pa*c_h*air_temp(i*dt)) \
+        +(Ls*c_h*(q_a-ice_q(float(u[0])))))+(kappa_ice*(float(u[1]))/dx);
     
     def top_ice_flux(x):
         return a0 + a1*x + a4*(x**4)
@@ -210,7 +210,7 @@ for i in range(0,nt):
     # set this root as the new BC for Tsoln
     u[0]=root
     
-    #update rhs with new interior nodes
+    # update rhs with new interior nodes
     rhs = B.dot(u)
 
     # print progress
@@ -257,13 +257,25 @@ for i in range(0,nt):
     thickness_loss_top_list.append(mass_loss_top/rho_i)
     thickness_loss_bottom_list.append(mass_loss_bottom/rho_i)
 
-# write the solution matrix to a file
+#%% writing the solution to a file
+
+# change minute list to 2Darray, then concatenate
+minute_list = np.array(minute_list)
+minute_list.shape = (len(minute_list),1)
 u_soln = u_soln.transpose()
-np.savetxt(f"solutions/ice_solver_{n+1}nodes_{nt}tsteps.txt",u_soln,fmt='%.10f',delimiter=' ')
+u_soln = np.concatenate((minute_list, u_soln), axis=1)
+
+# now write the heat solution matrix to a file
+
+np.savetxt(f"solutions/ice_solver_{n+1}nodes_{nt}tsteps.txt",
+           u_soln,fmt='%.10f',delimiter=' ')
 
 # create dimensional time array (in seconds, can convert later)
 time_list = [nt * dt for nt in range(1,nt+1)]
 time_list.insert(0,"t_dim")
+
+
+
 
 # combine all other 1D temporal values in lists from above
 master_fluxes_array = np.column_stack((time_list, sw_net_list, lw_in_list,
@@ -278,5 +290,6 @@ master_fluxes_array = np.column_stack((time_list, sw_net_list, lw_in_list,
                                        thickness_loss_top_list,
                                        thickness_loss_bottom_list))
 # save the matrix of components as CSV
-np.savetxt(f"solutions/fluxes_{n+1}nodes_{nt}tsteps.csv",master_fluxes_array,
+np.savetxt(f"solutions/fluxes1D_{n+1}nodes_{nt}tsteps.csv",
+           master_fluxes_array,
            fmt='%s',delimiter=',')
