@@ -51,7 +51,11 @@ class cnst(object):
     
     # temporal parameters
     dt = 0.5; # time between iterations, in seconds
-    nt = 5000; # amount of iterations
-    t_days = (dt*nt)/86400.0
+    nt = 50000; # amount of iterations
+    total_t = nt*dt # dimensional seconds that the simulation runs
+    total_t_days = (dt*nt)/86400.0 # dimensional days
+    p_count = 120; # t_steps to write to file
+    
     diff_time_scale = (float(L**2))/(alpha_ice) #in seconds
+    
     

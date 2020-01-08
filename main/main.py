@@ -7,7 +7,7 @@ from scipy import optimize
 from scipy import sparse
 #from scipy.sparse import linalg, diags
 from constants import cnst
-import funcs as funcs
+import funcs as fn
 
 #%% CN Scheme set up
 
@@ -51,23 +51,28 @@ rhs = B.dot(u)
 
 #set initial conditions to the matrix as the first row
 u_soln = u
-minute_list = [0]
+# create a list for how many times the solution was written
+write_list = [0]
 
 #%% Initial Fluxes - this section returns values of coefficients and fluxes
 
 # First, a sanity check, to see if the individual fluxes makes sense
 # We will calculate each part separately, using T_it and t=0
-rad_net = funcs.sw_net(0.0)+cnst.lw_in*(1-cnst.eps_ice)-cnst.eps_ice*cnst.sigma*(T_it**4)
-H_t = cnst.rho_a*cnst.u_star_top*cnst.c_pa*cnst.c_h*(funcs.air_temp(0.0) - T_it)
-Ls_t = cnst.rho_a*cnst.u_star_top*cnst.Ls*cnst.c_e*(cnst.q_a - funcs.ice_q(float(u[0]))) #q_i was defined above for T_it
+rad_net = fn.sw_net(0.0)+cnst.lw_in*(1-cnst.eps_ice)-cnst.eps_ice*cnst.sigma*(T_it**4)
+
+H_t = cnst.rho_a*cnst.u_star_top*cnst.c_pa*cnst.c_h*(fn.air_temp(0.0) - T_it)
+
+Ls_t = cnst.rho_a*cnst.u_star_top*cnst.Ls*cnst.c_e*(cnst.q_a - fn.ice_q(float(u[0])))
+
 G_t = (1.0/cnst.dx)*cnst.kappa_ice*(float(u[1])-T_it)
-print("\n-------Initial Fluxes-------")
-print("\nradiation_net =",rad_net,"\nH_t =",H_t,"\nLs_t =",Ls_t,"\nG_t=",G_t)
-print(f"sum of these terms={rad_net+H_t+Ls_t+G_t}")
+
+print("\n-------Initial Fluxes-------",
+      "\nradiation_net =",rad_net,"\nH_t =",H_t,"\nLs_t =",Ls_t,"\nG_t=",G_t,
+      f"sum of these terms={rad_net+H_t+Ls_t+G_t}")
 
 # Now we look at the starting polynomial coefficients
-a0 = funcs.sw_net(0.0)+cnst.lw_in*(1-cnst.eps_ice)+(cnst.rho_a*cnst.u_star_top)*((cnst.c_pa*cnst.c_h*funcs.air_temp(0.0)) \
-            +(cnst.Ls*cnst.c_h*(cnst.q_a-funcs.ice_q(float(u[0])))))+(cnst.kappa_ice*(float(u[1]))/cnst.dx);
+a0 = fn.sw_net(0.0)+cnst.lw_in*(1-cnst.eps_ice)+(cnst.rho_a*cnst.u_star_top)*((cnst.c_pa*cnst.c_h*fn.air_temp(0.0)) \
+            +(cnst.Ls*cnst.c_h*(cnst.q_a-fn.ice_q(float(u[0])))))+(cnst.kappa_ice*(float(u[1]))/cnst.dx);
 a1 = (-1.0*cnst.rho_a*cnst.c_pa*cnst.u_star_top*cnst.c_h)+((-1.0*cnst.kappa_ice)/cnst.dx);
 a2 = 0;
 a3 = 0;
@@ -77,10 +82,8 @@ a4 = (-1.0*cnst.sigma*cnst.eps_ice);
 def top_ice_flux_init(x):
     return a0 + a1*x + a4*(x**4)
 root = optimize.newton(top_ice_flux_init, float(u[0]))
-print("\n-------Initial Values-------")
-print("\na0=",a0,"\na1=",a1,"\na2=a3=0","\na4=",a4)
-print("The initial root is ",root)
-print("\n----------------------------")
+print("\n------Initial Values------","\na0=",a0,"\na1=",a1,"\na2=a3=0",
+      "\na4=",a4,"\nThe initial root is ",root,"\n--------------------------")
 
 #%% Prepare plots and empty lists
 
@@ -110,7 +113,7 @@ thickness_loss_bottom_list = ["thickness_loss_bottom"]
 
 for i in range(0,cnst.nt):
     
-    # tstep
+    # tstep in seconds
     ts = i*cnst.dt
     
     # run through the CN scheme for interior points
@@ -119,14 +122,14 @@ for i in range(0,cnst.nt):
     # force to be column vector
     u.shape = (len(u),1)
     
-    # append this array to solution file every 120 seconds
-    if (ts)%120 == 0 and (i != 0):
+    # append this array to solution file every pcount
+    if (ts)%(cnst.p_count) == 0 and (i != 0):
         u_soln = np.append(u_soln, u, axis=1)
-        minute_list.append((ts/60.0))
+        write_list.append(ts)
     
     # update values of the top EB polynomial (only a0 changes)
-    a0 = funcs.sw_net(ts)+cnst.lw_in*(1-cnst.eps_ice)+(cnst.rho_a*cnst.u_star_top)*((cnst.c_pa*cnst.c_h*funcs.air_temp(ts)) \
-        +(cnst.Ls*cnst.c_h*(cnst.q_a-funcs.ice_q(float(u[0])))))+(cnst.kappa_ice*(float(u[1]))/cnst.dx);
+    a0 = fn.sw_net(ts)+cnst.lw_in*(1-cnst.eps_ice)+(cnst.rho_a*cnst.u_star_top)*((cnst.c_pa*cnst.c_h*fn.air_temp(ts)) \
+        +(cnst.Ls*cnst.c_h*(cnst.q_a-fn.ice_q(float(u[0])))))+(cnst.kappa_ice*(float(u[1]))/cnst.dx);
     
     def top_ice_flux(x):
         return a0 + a1*x + a4*(x**4)
@@ -144,12 +147,12 @@ for i in range(0,cnst.nt):
     print(f"%={(i/cnst.nt)*100:.3f}, hr={(ts/3600)%24:.4f}, root={root:.4f}, value={top_ice_flux(root):.4f}")
     
     # Calculate individual terms on top from this iteration
-    sw_net_value = funcs.sw_net(ts)
+    sw_net_value = fn.sw_net(ts)
     lw_in_value = cnst.lw_in
     lw_out_value = -1.0*cnst.lw_in*cnst.eps_ice-(cnst.eps_ice*cnst.sigma*(float(u[0])**4))
     rad_net = sw_net_value+lw_in_value+lw_out_value
-    H_t = cnst.rho_a*cnst.u_star_top*cnst.c_pa*cnst.c_h*(funcs.air_temp(i*cnst.dt) - float(u[0]))
-    Ls_t = cnst.rho_a*cnst.u_star_top*cnst.Ls*cnst.c_e*(cnst.q_a - funcs.ice_q(float(u[0])))
+    H_t = cnst.rho_a*cnst.u_star_top*cnst.c_pa*cnst.c_h*(fn.air_temp(i*cnst.dt) - float(u[0]))
+    Ls_t = cnst.rho_a*cnst.u_star_top*cnst.Ls*cnst.c_e*(cnst.q_a - fn.ice_q(float(u[0])))
     G_t = (1.0/cnst.dx)*cnst.kappa_ice*(float(u[1])-float(u[0]))
     top_flux_sum = rad_net + H_t + Ls_t + G_t
 
@@ -172,7 +175,7 @@ for i in range(0,cnst.nt):
     Ls_t_list.append(Ls_t)
     G_t_list.append(G_t)
     T5_list.append(float(u[1]))
-    air_temp_list.append(funcs.air_temp(i*cnst.dt))
+    air_temp_list.append(fn.air_temp(i*cnst.dt))
     top_ice_temp_list.append(root)
     Lf_b_list.append(Lf_b)
     H_b_list.append(H_b)
@@ -187,22 +190,22 @@ for i in range(0,cnst.nt):
 #%% writing the solution to a file
 
 # change minute list to 2Darray, then concatenate
-minute_list = np.array(minute_list)
-minute_list.shape = (len(minute_list),1)
+write_list2 = np.array(np.arange(0,cnst.total_t,cnst.p_count))
+write_list2.shape = (len(write_list2),1)
 u_soln = u_soln.transpose()
-u_soln = np.concatenate((minute_list, u_soln), axis=1)
+u_soln = np.concatenate((write_list2, u_soln), axis=1)
 
 # now write the heat solution matrix to a file
-
 np.savetxt(f"solutions/ice_solver_{cnst.n+1}nodes_{cnst.nt}tsteps.txt",
            u_soln,fmt='%.10f',delimiter=' ')
 
 # create dimensional time array (in seconds, can convert later)
-time_list = [cnst.nt * cnst.dt for cnst.nt in range(1,cnst.nt+1)]
-time_list.insert(0,"t_dim")
+# create time array because it is hard to do in constants file
+t_list = [cnst.nt*cnst.dt for cnst.nt in range(0,cnst.nt)]
+t_list.insert(0,"t_dim")
 
 # combine all other 1D temporal values in lists from above
-master_fluxes_array = np.column_stack((time_list, sw_net_list, lw_in_list,
+master_fluxes_array = np.column_stack((t_list, sw_net_list, lw_in_list,
                                        lw_out_list, rad_net_list, H_t_list,
                                        Ls_t_list, G_t_list, T5_list,
                                        air_temp_list, top_ice_temp_list,

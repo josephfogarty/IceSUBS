@@ -1,3 +1,5 @@
+# functions for the sea ice solver
+
 import numpy as np
 from constants import cnst
 
