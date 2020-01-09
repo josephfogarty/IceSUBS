@@ -130,17 +130,18 @@ plt.close()
 #%% plot the ice heat solution at selected points
 
 # hours of the day to plot after n days
-n_days = 10
-t_hr = [0, 4, 8, 12, 16, 20]
-#after n days at these hours, where is the values
-t_hr_row_num = [(n_days*1440 + t*60) for t in t_hr]
+n_days = 7
+t_hr = [0, 8, 16]
+#after n days at these hours, where is the values (in seconds)
+t_hr_row_num = [(n_days*86400 + t*3600) for t in t_hr]
 
 # cut x in half to only look at top half of ice
 x_top_half = cnst.x[:int(len(cnst.x)/2)]
 
-
 row_indices = []
+# for each row at the specified second
 for time in t_hr_row_num:
+    # add 
     row_indices.append(np.where(ice_heat_solution_array[:,0]==time)[0][0])
 
 fig,ax=plt.subplots()

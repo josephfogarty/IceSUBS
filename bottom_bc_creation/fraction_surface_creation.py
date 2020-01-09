@@ -25,8 +25,8 @@ Nx = 64
 Ny = Nx
 
 # put in fractions (in percent)
-frac_ice = 50
-frac_sea = 50
+frac_ice = 79
+frac_sea = 21
 frac_pond = 0
 
 # create cutoff indices
@@ -55,7 +55,9 @@ np.savetxt(sp_trans, arr_trans)
 # plot and save the map and it's transpose
 fig = plt.figure(figsize = (6,6))
 plt.imshow(arr,cmap=cmap,norm=norm)
-plt.title(f"Fraction of Ice ({frac_ice}%), Sea ({frac_sea}%), and Pond ({frac_pond}%)")
+plt.axis('off')
+plt.tight_layout()
+#plt.title(f"Fraction of Ice ({frac_ice}%), Sea ({frac_sea}%), and Pond ({frac_pond}%)")
 filename = f"ice_{round(frac_ice)}_sea_{round(frac_sea)}_pond_{round(frac_pond)}.jpg"
 plt.savefig(os.path.join("img","ideal_patterns",filename), bbox_inches='tight')
 plt.close()
@@ -63,7 +65,9 @@ plt.close()
 # now the transpose
 fig_trans = plt.figure(figsize = (6,6))
 plt.imshow(arr_trans,cmap=cmap,norm=norm)
-plt.title(f"Fraction of Ice ({frac_ice}%), Sea ({frac_sea}%), and Pond ({frac_pond}%)")
+#plt.title(f"Fraction of Ice ({frac_ice}%), Sea ({frac_sea}%), and Pond ({frac_pond}%)")
+plt.axis('off')
+plt.tight_layout()
 filename = f"ice_{round(frac_ice)}_sea_{round(frac_sea)}_pond_{round(frac_pond)}_TRANS.jpg"
 plt.savefig(os.path.join("img","ideal_patterns",filename), bbox_inches='tight')
 plt.close()
