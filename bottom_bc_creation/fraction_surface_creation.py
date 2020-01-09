@@ -62,14 +62,14 @@ filename = f"ice_{round(frac_ice)}_sea_{round(frac_sea)}_pond_{round(frac_pond)}
 plt.savefig(os.path.join("img","ideal_patterns",filename), bbox_inches='tight')
 plt.close()
 
-# now the transpose
-fig_trans = plt.figure(figsize = (6,6))
-plt.imshow(arr_trans,cmap=cmap,norm=norm)
-#plt.title(f"Fraction of Ice ({frac_ice}%), Sea ({frac_sea}%), and Pond ({frac_pond}%)")
-plt.axis('off')
-plt.tight_layout()
-filename = f"ice_{round(frac_ice)}_sea_{round(frac_sea)}_pond_{round(frac_pond)}_TRANS.jpg"
-plt.savefig(os.path.join("img","ideal_patterns",filename), bbox_inches='tight')
-plt.close()
+## now the transpose
+#fig_trans = plt.figure(figsize = (6,6))
+#plt.imshow(arr_trans,cmap=cmap,norm=norm)
+##plt.title(f"Fraction of Ice ({frac_ice}%), Sea ({frac_sea}%), and Pond ({frac_pond}%)")
+#plt.axis('off')
+#plt.tight_layout()
+#filename = f"ice_{round(frac_ice)}_sea_{round(frac_sea)}_pond_{round(frac_pond)}_TRANS.jpg"
+#plt.savefig(os.path.join("img","ideal_patterns",filename), bbox_inches='tight')
+#plt.close()
 
 
