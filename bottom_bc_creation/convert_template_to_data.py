@@ -47,7 +47,7 @@ zo_sea = 0.002
 zo_pond = 0.001
 
 # Define temperatures corresponding to surface type
-T_ice = 270.15 #Kelvin, -3 degrees C
+T_ice = 274.15 #Kelvin, -3 degrees C
 T_sea = 274.15 #Kelvin, 1 degrees C
 T_pond = 275.15 # Kelvin, 2 degrees C
 
@@ -58,23 +58,18 @@ q_pond = liquid_q(T_pond)
 
 # DONT TOUCH ANYTHING ABOVE HERE
 # unless you are changing sea ice/ocean parameters
-#%% Loading Data
-
-# Path of template matrix - choose path and with/without ponding
-filename = "beaufo_2000aug31a_3c_64x64.out"
-#sub_list = ["without_ponds", "with_ponds", "low_reso"]
-#ponding = sub_list[2]
+#%% Loading Data - changing these parameters
 
 # Path of template matrix
-lp = os.path.join("array_text_files",
-                  "ideal_patterns",
-                  "beaufo_2000_aug31.txt")
+lp = os.path.join("array_text_files","ideal_patterns","half_and_half.txt")
 
 # Path to save the matrix for LES
-sp_les = os.path.join("LES_ready","half_patterns")
+sp_les = os.path.join("LES_ready","half_patterns","case509_roughdiff")
 
 # path to save the images of maps or patterns
-sp_img = os.path.join("img", "observed_ice_maps")
+#sp_img = os.path.join("img", "observed_ice_maps")
+
+#%% loading matrix and giving information about it
 
 # Load the template matrix
 master_sfc_template = np.loadtxt(lp)
@@ -121,4 +116,4 @@ np.savetxt(os.path.join(sp_les, "zo_remote_ice.txt"), zo_sfc, delimiter=' ', fmt
 np.savetxt(os.path.join(sp_les, "q_s_remote_ice.txt"), q_sfc, delimiter=' ', fmt='%E')
 
 # Finish
-print("Three templates created!")
+print("\n  Three templates created and text arrays saved to {sp_les}!")
