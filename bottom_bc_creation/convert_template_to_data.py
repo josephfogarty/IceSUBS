@@ -116,4 +116,4 @@ np.savetxt(os.path.join(sp_les, "zo_remote_ice.txt"), zo_sfc, delimiter=' ', fmt
 np.savetxt(os.path.join(sp_les, "q_s_remote_ice.txt"), q_sfc, delimiter=' ', fmt='%E')
 
 # Finish
-print("\n  Three templates created and text arrays saved to {sp_les}!")
+print(f"\n  Three templates created and text arrays saved to {sp_les}!")

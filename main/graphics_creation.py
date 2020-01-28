@@ -31,7 +31,7 @@ time_hours = [cnst.nt*cnst.dt/3600.0 for cnst.nt in range(0,cnst.nt)]
 flux_dict = temporal_fluxes_df.to_dict('list')
 
 # plot the top fluxes
-title_top=f"Time Evolution of Top Fluxes after {cnst.t_days:.2f} days"
+title_top=f"Time Evolution of Top Fluxes after {cnst.total_t_days:.2f} days"
 plt.plot(time_hours,flux_dict["R_net"],label="Radiation Net Flux")
 plt.plot(time_hours,flux_dict["H_t"],label="Sensible Heat Flux")
 plt.plot(time_hours,flux_dict["Ls_t"],label="Latent Heat (s) Flux")
@@ -48,7 +48,7 @@ plt.savefig("figures/top_fluxes_temporal.png")
 plt.close()
 
 # plot the bottom fluxes
-title_bottom = f"Time Evolution of Bottom Fluxes after {cnst.t_days:.2f} days"
+title_bottom = f"Time Evolution of Bottom Fluxes after {cnst.total_t_days:.2f} days"
 plt.plot(time_hours,flux_dict["Lf_b"],label="Latent Heat (f) Flux")
 plt.plot(time_hours,flux_dict["G_b"],label="Conductive Heat Flux")
 plt.plot(time_hours,flux_dict["H_b"],label="Sensible Heat Flux")
@@ -63,7 +63,7 @@ plt.savefig("figures/bottom_fluxes_temporal.png")
 plt.close()
 
 # plot the radiation budget
-title_top_rad=f"Time Evolution of Top Radiative Fluxes after {cnst.t_days:.2f} days"
+title_top_rad=f"Time Evolution of Top Radiative Fluxes after {cnst.total_t_days:.2f} days"
 plt.plot(time_hours,flux_dict["LW_in"],label=r"$LW_{in}$")
 plt.plot(time_hours,flux_dict["LW_out"],label=r"$LW_{out}$")
 plt.plot(time_hours,flux_dict["SW_net"],label=r"$SW_{net}$")
@@ -79,7 +79,7 @@ plt.savefig("figures/radiative_fluxes_temporal.png")
 plt.close()
 
 # plot surface temp and air temp comparison
-title_T_it=f"Surface and Air Temperature Evolution after {cnst.t_days:.2f} days"
+title_T_it=f"Surface and Air Temperature Evolution after {cnst.total_t_days:.2f} days"
 plt.plot(time_hours,flux_dict["T_s"],label="$T_s$")
 plt.plot(time_hours,flux_dict["T_a"],label="$T_a$")
 plt.title(title_T_it)

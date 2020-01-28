@@ -24,6 +24,7 @@ class cnst(object):
     u_star_bottom = 0.1; #friction velocity of water, m/s
     c_h = 0.01737; # bulk transfer coefficient for latent heat
     c_e = 0.01737; # bulk transer coefficient for sensible heat
+    k_eddy = 1.0 # eddy diffusion coefficient, m^2/s
     
     # thermodynamics
     T_w = 272.15; # temperature of bulk water, K
@@ -51,11 +52,10 @@ class cnst(object):
     
     # temporal parameters
     dt = 0.5; # time between iterations, in seconds
-    nt = 2000000; # amount of iterations
+    nt = 100000; # amount of iterations
     total_t = nt*dt # dimensional seconds that the simulation runs
     total_t_days = (dt*nt)/86400.0 # dimensional days
-    p_count = 120; # t_steps to write to file
-    
+    p_count = 1000; # t_steps to write to file
     diff_time_scale = (float(L**2))/(alpha_ice) #in seconds
     
     
