@@ -47,24 +47,28 @@ zo_sea = 0.002
 zo_pond = 0.001
 
 # Define temperatures corresponding to surface type
-T_ice = 274.15 #Kelvin, -3 degrees C
+T_ice = 270.15 #Kelvin, -3 degrees C
 T_sea = 274.15 #Kelvin, 1 degrees C
 T_pond = 275.15 # Kelvin, 2 degrees C
 
 # Calculate specific humdity based n these temperatures above
-q_ice = ice_q(T_ice)
-q_sea = liquid_q(T_sea)
-q_pond = liquid_q(T_pond)
+#q_ice = ice_q(T_ice)
+#q_sea = liquid_q(T_sea)
+#q_pond = liquid_q(T_pond)
 
 # DONT TOUCH ANYTHING ABOVE HERE
 # unless you are changing sea ice/ocean parameters
 #%% Loading Data - changing these parameters
 
-# Path of template matrix
-lp = os.path.join("array_text_files","ideal_patterns","half_and_half.txt")
+#fractest parameters
+ice = 90
+sea = 10
+
+# Path of template matrix text files
+lp = os.path.join("array_text_files","ideal_patterns",f"fractest_ice{ice}_sea{sea}_pond0.txt")
 
 # Path to save the matrix for LES
-sp_les = os.path.join("LES_ready","half_patterns","case509_roughdiff")
+sp_les = os.path.join("LES_ready","fractest",f"fractest_ice{ice}_sea{sea}_pond0")
 
 # path to save the images of maps or patterns
 #sp_img = os.path.join("img", "observed_ice_maps")
@@ -104,16 +108,16 @@ zo_sfc[zo_sfc == 3] = zo_pond
 print(np.unique(zo_sfc))
 
 # Create humidity matrix
-q_sfc = np.loadtxt(lp)
-q_sfc[q_sfc == 1] = q_ice
-q_sfc[q_sfc == 2] = q_sea
-q_sfc[q_sfc == 3] = q_pond
-print(np.unique(q_sfc))
+#q_sfc = np.loadtxt(lp)
+##q_sfc[q_sfc == 1] = q_ice
+##q_sfc[q_sfc == 2] = q_sea
+##q_sfc[q_sfc == 3] = q_pond
+#print(np.unique(q_sfc))
 
 # Save the matrices
 np.savetxt(os.path.join(sp_les, "T_s_remote_ice.txt"), temp_sfc, delimiter=' ', fmt='%E')
 np.savetxt(os.path.join(sp_les, "zo_remote_ice.txt"), zo_sfc, delimiter=' ', fmt='%E')
-np.savetxt(os.path.join(sp_les, "q_s_remote_ice.txt"), q_sfc, delimiter=' ', fmt='%E')
+#np.savetxt(os.path.join(sp_les, "q_s_remote_ice.txt"), q_sfc, delimiter=' ', fmt='%E')
 
 # Finish
 print(f"\n  Three templates created and text arrays saved to {sp_les}!")
