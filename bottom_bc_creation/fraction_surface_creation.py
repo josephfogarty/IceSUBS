@@ -28,8 +28,8 @@ Nx = 64
 Ny = Nx
 
 # put in fractions (in percent)
-frac_ice = 100
-frac_sea = 0
+frac_ice = 0
+frac_sea = 100
 frac_pond = 0
 
 #%% create the array

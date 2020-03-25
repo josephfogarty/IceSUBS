@@ -58,17 +58,18 @@ T_pond = 275.15 # Kelvin, 2 degrees C
 
 # DONT TOUCH ANYTHING ABOVE HERE
 # unless you are changing sea ice/ocean parameters
+
 #%% Loading Data - changing these parameters
 
 #fractest parameters
-ice = 90
-sea = 10
+#ice = 100
+#sea = 0
 
 # Path of template matrix text files
-lp = os.path.join("array_text_files","ideal_patterns",f"fractest_ice{ice}_sea{sea}_pond0.txt")
+lp = os.path.join("array_text_files","ideal_patterns","fractest_all_sea.txt")
 
 # Path to save the matrix for LES
-sp_les = os.path.join("LES_ready","fractest",f"fractest_ice{ice}_sea{sea}_pond0")
+sp_les = os.path.join("LES_ready","fractest","fractest_all_sea")
 
 # path to save the images of maps or patterns
 #sp_img = os.path.join("img", "observed_ice_maps")
