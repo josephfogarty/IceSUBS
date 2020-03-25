@@ -24,7 +24,7 @@ class cnst(object):
     u_star_bottom = 0.1; #friction velocity of water, m/s
     c_h = 0.01737; # bulk transfer coefficient for latent heat
     c_e = 0.01737; # bulk transer coefficient for sensible heat
-    k_eddy = 1.0 # eddy diffusion coefficient, m^2/s
+    k_eddy = 0.1 # eddy diffusion coefficient, m^2/s
     
     # thermodynamics
     T_w = 272.15; # temperature of bulk water, K
