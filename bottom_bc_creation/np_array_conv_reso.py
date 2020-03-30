@@ -43,7 +43,7 @@ def conv_res(data, rows, cols):
 #%% Import the array
     
 # load the text file of the array
-ice_map = "beaufo_2000aug31a_3c.out"
+ice_map = "esiber_2000jul06a_2c.out"
 lp = os.path.join("array_text_files","observed_ice_maps","without_ponds",ice_map)
 loaded_mat = np.loadtxt(lp)
 

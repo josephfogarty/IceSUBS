@@ -28,9 +28,14 @@ Nx = 64
 Ny = Nx
 
 # put in fractions (in percent)
-frac_ice = 0
-frac_sea = 100
+frac_ice = 84
+frac_sea = 16
 frac_pond = 0
+
+#save path CHANGE THIS
+filename = f"ice{round(frac_ice)}_sea{round(frac_sea)}_pond{round(frac_pond)}"
+sp = os.path.join("array_text_files","ideal_patterns", filename+".txt")
+sp_trans = os.path.join("array_text_files","ideal_patterns", filename+"_trans.txt")
 
 #%% create the array
 
@@ -49,10 +54,6 @@ arr_trans = arr.T
 
 #%% saving the numerical array 
 
-#save path CHANGE THIS
-filename = f"ice{round(frac_ice)}_sea{round(frac_sea)}_pond{round(frac_pond)}"
-sp = os.path.join("array_text_files","ideal_patterns", filename+".txt")
-sp_trans = os.path.join("array_text_files","ideal_patterns", filename+"_trans.txt")
 np.savetxt(sp, arr)
 np.savetxt(sp_trans, arr_trans)
 
