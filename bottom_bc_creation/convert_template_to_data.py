@@ -83,18 +83,15 @@ T_pond = 275.15 # Kelvin, 2 degrees C
 
 # CHANGE HERE: Path of template matrix text files
 # this should be the path of a map file
-lp = os.path.join("array_text_files","observed_ice_maps","low_reso","esiber_2000jul06a_2c_64x64.out")
+lp = os.path.join("array_text_files","observed_ice_maps","low_reso","cafram_2000aug07a_2c_64x64.out")
 # ideal maps will be created later using function defined above
 
 # CHANGE HERE: Paths to save all the matrices for the LES
-sp_les = os.path.join("LES_ready","maptest","esiber_2000_jul06","reso64_map")
-sp_les_ideal = os.path.join("LES_ready","maptest","esiber_2000_jul06","reso64_ideal")
-sp_les_ideal_trans = os.path.join("LES_ready","maptest","esiber_2000_jul06","reso64_ideal_trans")
-
-
-
-# path to save the images of maps or patterns
-#sp_img = os.path.join("img", "observed_ice_maps")
+project = "cafram_2000_aug07"
+sp_les = os.path.join("LES_ready","maptest",project,"reso64_map")
+sp_les_trans = os.path.join("LES_ready","maptest",project,"reso64_map_trans")
+sp_les_ideal = os.path.join("LES_ready","maptest",project,"reso64_ideal")
+sp_les_ideal_trans = os.path.join("LES_ready","maptest",project,"reso64_ideal_trans")
 
 #%% loading matrix and giving information about it
 
@@ -115,17 +112,20 @@ print(f"  Ice fraction plus sea fraction is {frac_ice + frac_sea}%!")
 # now use the imported data to create two other arrays
 arr_ideal, arr_ideal_trans = ideal_arrays(master_sfc_template, 64, frac_sea)
 
-# view all three figures
-fig, (ax1, ax2, ax3) = plt.subplots(figsize=(13, 5), ncols=3)
-ax1.set_title("master_sfc_template")
+# view all four figures
+fig, (ax1, ax2, ax3, ax4) = plt.subplots(figsize=(13, 5), ncols=4)
+ax1.set_title("map")
 im_map = ax1.imshow(master_sfc_template,cmap=cmap)
 fig.colorbar(im_map, ax=ax1)
-ax2.set_title("arr_ideal")
-im_ideal = ax2.imshow(arr_ideal,cmap=cmap)
-fig.colorbar(im_ideal, ax=ax2)
-ax3.set_title("arr_ideal_trans")
-im_ideal_trans = ax3.imshow(arr_ideal_trans,cmap=cmap)
-fig.colorbar(im_ideal_trans, ax=ax3)
+ax2.set_title("map_trans")
+im_map_trans = ax2.imshow(master_sfc_template.T,cmap=cmap)
+fig.colorbar(im_map_trans, ax=ax2)
+ax3.set_title("arr_ideal")
+im_ideal = ax3.imshow(arr_ideal,cmap=cmap)
+fig.colorbar(im_ideal, ax=ax3)
+ax4.set_title("arr_ideal_trans")
+im_ideal_trans = ax4.imshow(arr_ideal_trans,cmap=cmap)
+fig.colorbar(im_ideal_trans, ax=ax4)
 plt.show()
 
 
@@ -160,6 +160,8 @@ def create_maps(array):
 # create Ts and zo for map, ideal, and ideal_trans
 print("\n  for original map")
 ts_map, zo_map = create_maps(master_sfc_template)
+print("\n for trans map")
+ts_map_trans, zo_map_trans = create_maps(master_sfc_template.T)
 print("\n  for ideal map")
 ts_map_ideal, zo_map_ideal = create_maps(arr_ideal)
 print("\n  for ideal_trans map")
@@ -170,6 +172,12 @@ np.savetxt(os.path.join(sp_les, "T_s_remote_ice.txt"), ts_map, delimiter=' ', fm
 np.savetxt(os.path.join(sp_les, "zo_remote_ice.txt"), zo_map, delimiter=' ', fmt='%E')
 #np.savetxt(os.path.join(sp_les, "q_s_remote_ice.txt"), q_sfc, delimiter=' ', fmt='%E')
 print(f"\n  T_s and zo templates created, and text arrays for the map saved to {sp_les}!")
+
+# Save the transposed map matrices for temp and z0
+np.savetxt(os.path.join(sp_les_trans, "T_s_remote_ice.txt"), ts_map_trans, delimiter=' ', fmt='%E')
+np.savetxt(os.path.join(sp_les_trans, "zo_remote_ice.txt"), zo_map_trans, delimiter=' ', fmt='%E')
+#np.savetxt(os.path.join(sp_les, "q_s_remote_ice.txt"), q_sfc, delimiter=' ', fmt='%E')
+print(f"  T_s and zo templates created, and text arrays for the trans map saved to {sp_les_trans}!")
 
 # Save the IDEAL matrices for temp and z0
 np.savetxt(os.path.join(sp_les_ideal, "T_s_remote_ice.txt"), ts_map_ideal, delimiter=' ', fmt='%E')
@@ -182,6 +190,40 @@ np.savetxt(os.path.join(sp_les_ideal_trans, "T_s_remote_ice.txt"), ts_map_ideal_
 np.savetxt(os.path.join(sp_les_ideal_trans, "zo_remote_ice.txt"), zo_map_ideal_trans, delimiter=' ', fmt='%E')
 #np.savetxt(os.path.join(sp_les, "q_s_remote_ice.txt"), q_sfc, delimiter=' ', fmt='%E')
 print(f"  T_s and zo templates created, and text arrays for ideal_trans saved to {sp_les_ideal_trans}!")
+
+#%% for the diag tests, just need to import the array
+
+diag_list = ["diag_ice", "diag_ice_trans", "diag_sea", "diag_sea_trans"]
+
+for d in diag_list:
+    
+    # save path and load path
+    lp = os.path.join("array_text_files","ideal_patterns","diag_test",d+'.txt')
+    sp = os.path.join("LES_ready","diagtest",d,"reso_64")
+    
+    # load the diag array
+    master_sfc_array = np.loadtxt(lp)
+    
+    # convert to roughness and temp maps
+    t_sfc, zo_sfc = create_maps(master_sfc_array)
+    
+    # save them
+    np.savetxt(os.path.join(sp, "T_s_remote_ice.txt"), t_sfc, delimiter=' ', fmt='%E')
+    np.savetxt(os.path.join(sp, "zo_remote_ice.txt"), zo_sfc, delimiter=' ', fmt='%E')
+    
+    # print
+    print(f"  saved {d} map to {sp}!")
+
+
+
+
+
+
+
+
+
+
+
 
 
 

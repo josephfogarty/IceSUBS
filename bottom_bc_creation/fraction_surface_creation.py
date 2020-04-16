@@ -12,7 +12,7 @@ import os
 # colormap properties for ice, water, and pond
 from matplotlib.colors import ListedColormap
 from matplotlib.colors import BoundaryNorm
-cmap = ListedColormap(['black','xkcd:off white', 'xkcd:midnight blue', 'xkcd:cyan'])
+cmap = ListedColormap(['xkcd:off white', 'xkcd:midnight blue'])
 bounds = [-0.4,0.5,1.5,2.5,3.5]
 norm = BoundaryNorm(bounds,cmap.N)
 
@@ -28,8 +28,8 @@ Nx = 64
 Ny = Nx
 
 # put in fractions (in percent)
-frac_ice = 84
-frac_sea = 16
+frac_ice = 10
+frac_sea = 90
 frac_pond = 0
 
 #save path CHANGE THIS
@@ -83,4 +83,50 @@ plt.close()
 #plt.savefig(os.path.join("img","ideal_patterns",filename), bbox_inches='tight')
 #plt.close()
 
+#%% for diagonal arrays 
 
+# save path for diagonals
+sp_dia = os.path.join("array_text_files","ideal_patterns","diag_test")
+
+# create full arrays
+ice_arr = np.full((Nx,Ny),ice)
+sea_arr = np.full((Nx,Ny),sea)
+
+# make them diagonal
+diag_only_ice = np.triu(ice_arr)
+diag_only_sea = np.tril(sea_arr)
+# zero out diagonal for the sea array, then add
+np.fill_diagonal(diag_only_sea,0)
+diag_ice = diag_only_ice + diag_only_sea
+
+# create the other three arrays
+diag_sea = diag_ice.T
+diag_ice_trans = np.flipud(diag_sea)
+diag_sea_trans = np.flipud(diag_ice)
+
+# view all four figures
+fig, (ax1, ax2, ax3, ax4) = plt.subplots(figsize=(13, 5), ncols=4)
+
+ax1.set_title("diag_ice")
+im_di = ax1.imshow(diag_ice,cmap=cmap)
+#fig.colorbar(im_di, ax=ax1)
+
+ax2.set_title("diag_ice_trans")
+im_di_trans = ax2.imshow(diag_ice_trans,cmap=cmap)
+#fig.colorbar(im_di_trans, ax=ax2)
+
+ax3.set_title("diag_sea")
+im_ds = ax3.imshow(diag_sea,cmap=cmap)
+#fig.colorbar(im_ds, ax=ax3)
+
+ax4.set_title("diag_sea_trans")
+im_ds_trans = ax4.imshow(diag_sea_trans,cmap=cmap)
+#fig.colorbar(im_ds_trans, ax=ax4)
+
+plt.show()
+
+# save all four figures
+np.savetxt(os.path.join(sp_dia,"diag_ice.txt"), diag_ice)
+np.savetxt(os.path.join(sp_dia,"diag_ice_trans.txt"), diag_ice_trans)
+np.savetxt(os.path.join(sp_dia,"diag_sea.txt"), diag_sea)
+np.savetxt(os.path.join(sp_dia,"diag_sea_trans.txt"), diag_sea_trans)
