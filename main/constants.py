@@ -52,7 +52,7 @@ class cnst(object):
     
     # temporal parameters
     dt = 0.5; # time between iterations, in seconds
-    nt = 100000; # amount of iterations
+    nt = 1500000; # amount of iterations
     total_t = nt*dt # dimensional seconds that the simulation runs
     total_t_days = (dt*nt)/86400.0 # dimensional days
     p_count = 1000; # t_steps to write to file
