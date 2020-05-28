@@ -30,69 +30,75 @@ time_hours = [cnst.nt*cnst.dt/3600.0 for cnst.nt in range(0,cnst.nt)]
 # import all variables as a dictionary
 flux_dict = temporal_fluxes_df.to_dict('list')
 
+
+#%%
 # plot the top fluxes
-title_top=f"Time Evolution of Top Fluxes after {cnst.total_t_days:.2f} days"
-plt.plot(time_hours,flux_dict["R_net"],label="Radiation Net Flux")
-plt.plot(time_hours,flux_dict["H_t"],label="Sensible Heat Flux")
-plt.plot(time_hours,flux_dict["Ls_t"],label="Latent Heat (s) Flux")
-plt.plot(time_hours,flux_dict["G_t"],label="Conductive Heat Flux")
-plt.plot(time_hours,flux_dict["top_flux_sum"],label="Top Flux Sum")
-plt.title(title_top)
-plt.ylabel(r'Flux (W m$^{-2}$)')
-plt.xlabel("Time (hr)")
-plt.legend()
-plt.xlim(left=0)
-plt.xticks(np.arange(min(time_hours), max(time_hours)+1, 12))
-plt.grid()
-plt.tight_layout()
-plt.savefig("figures/top_fluxes_temporal.png")
+fig, ax = plt.subplots(figsize=(8,5))
+ax.plot(time_hours,flux_dict["R_net"],label="Radiation Net Flux")
+ax.plot(time_hours,flux_dict["H_t"],label="Sensible Heat Flux")
+ax.plot(time_hours,flux_dict["Ls_t"],label="Latent Heat (s) Flux")
+ax.plot(time_hours,flux_dict["G_t"],label="Conductive Heat Flux")
+ax.plot(time_hours,flux_dict["top_flux_sum"],label="Top Flux Sum")
+ax.set_title(f"Time Evolution of Top Fluxes after {cnst.total_t_days:.2f} days")
+ax.set_ylabel(r'Flux (W m$^{-2}$)')
+ax.set_xlabel("Time (hr)")
+ax.set_xlim(left=0)
+ax.set_xticks(np.arange(min(time_hours), max(time_hours)+1, 24))
+ax.grid()
+box = ax.get_position()
+ax.set_position([box.x0, box.y0 + box.height * 0.1,
+                 box.width, box.height * 0.9])
+ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05), shadow=True, ncol=5)
+
+
+fig.savefig(os.path.join('figures','top_fluxes_temporal.png'))
+
 plt.close()
 
+
+
 # plot the bottom fluxes
-title_bottom = f"Time Evolution of Bottom Fluxes after {cnst.total_t_days:.2f} days"
-plt.plot(time_hours,flux_dict["Lf_b"],label="Latent Heat (f) Flux")
-plt.plot(time_hours,flux_dict["G_b"],label="Conductive Heat Flux")
-plt.plot(time_hours,flux_dict["H_b"],label="Sensible Heat Flux")
-plt.plot(time_hours,flux_dict["bottom_flux_sum"],label="Bottom Flux Sum")
-plt.title(title_bottom)
-plt.xlabel("Time (hr)")
-plt.ylabel(r'Flux (W m$^{-2}$)')
-plt.xticks(np.arange(min(time_hours), max(time_hours)+1, 12))
-plt.grid()
-plt.legend()
-plt.tight_layout()
-plt.savefig("figures/bottom_fluxes_temporal.png")
+fig, ax = plt.subplots(figsize=(8,5))
+ax.plot(time_hours,flux_dict["Lf_b"],label="Latent Heat (f) Flux")
+ax.plot(time_hours,flux_dict["G_b"],label="Conductive Heat Flux")
+ax.plot(time_hours,flux_dict["H_b"],label="Sensible Heat Flux")
+ax.plot(time_hours,flux_dict["bottom_flux_sum"],label="Bottom Flux Sum")
+ax.set_title(f"Time Evolution of Bottom Fluxes after {cnst.total_t_days:.2f} days")
+ax.set_xlabel("Time (hr)")
+ax.set_ylabel(r'Flux (W m$^{-2}$)')
+ax.set_xticks(np.arange(min(time_hours), max(time_hours)+1, 24))
+ax.grid()
+ax.legend()
+fig.savefig(os.path.join('figures','bottom_fluxes_temporal.png'))
 plt.close()
 
 # plot the radiation budget
-title_top_rad=f"Time Evolution of Top Radiative Fluxes after {cnst.total_t_days:.2f} days"
-plt.plot(time_hours,flux_dict["LW_in"],label=r"$LW_{in}$")
-plt.plot(time_hours,flux_dict["LW_out"],label=r"$LW_{out}$")
-plt.plot(time_hours,flux_dict["SW_net"],label=r"$SW_{net}$")
-plt.plot(time_hours,flux_dict["R_net"],label=r"$R_{net}$")
-plt.title(title_top_rad)
-plt.ylabel(r'Flux (W m$^{-2}$)')
-plt.xlabel("Time (hr)")
-plt.xticks(np.arange(min(time_hours), max(time_hours)+1, 12))
+fig, ax = plt.subplots(figsize=(8,5))
+ax.plot(time_hours,flux_dict["LW_in"],label=r"$LW_{in}$")
+ax.plot(time_hours,flux_dict["LW_out"],label=r"$LW_{out}$")
+ax.plot(time_hours,flux_dict["SW_net"],label=r"$SW_{net}$")
+ax.plot(time_hours,flux_dict["R_net"],label=r"$R_{net}$")
+ax.set_title(f"Time Evolution of Top Radiative Fluxes after {cnst.total_t_days:.2f} days")
+ax.set_ylabel(r'Flux (W m$^{-2}$)')
+ax.set_xlabel("Time (hr)")
+ax.set_xticks(np.arange(min(time_hours), max(time_hours)+1, 24))
 #plt.axhline(y=0, color='k')
-plt.grid()
-plt.legend()
-plt.tight_layout()
-plt.savefig("figures/radiative_fluxes_temporal.png")
+ax.grid()
+#ax.legend()
+fig.savefig(os.path.join('figures','radiative_fluxes_temporal.png'))
 plt.close()
 
 # plot surface temp and air temp comparison
-title_T_it=f"Surface and Air Temperature Evolution after {cnst.total_t_days:.2f} days"
-plt.plot(time_hours,flux_dict["T_s"],label="$\theta_s$")
-plt.plot(time_hours,flux_dict["T_a"],label="$\theta_a$")
-plt.title(title_T_it)
-plt.xlabel("Time (hr)")
-plt.ylabel('Temperature (K)')
-plt.xticks(np.arange(min(time_hours), max(time_hours)+1, 12))
-plt.legend()
-plt.tight_layout()
-plt.grid()
-plt.savefig("figures/surface_and_air_temp_temporal.png")
+fig, ax = plt.subplots(figsize=(8,5))
+ax.plot(time_hours,flux_dict["T_s"],label=r"$\theta_s$")
+ax.plot(time_hours,flux_dict["T_a"],label=r"$\theta_a$")
+ax.set_title(f"Surface and Air Temperature Evolution after {cnst.total_t_days:.2f} days")
+ax.set_xlabel("Time (hr)")
+ax.set_ylabel('Temperature (K)')
+ax.set_xticks(np.arange(min(time_hours), max(time_hours)+1, 24))
+ax.legend()
+ax.grid()
+fig.savefig(os.path.join('figures','surface_and_air_temp_temporal.png'))
 plt.close()
 
 ## plot time evoluation of mass loss (top and bottom)
@@ -136,7 +142,7 @@ plt.close()
 # hours of the day to plot after n days
 n_days = 7
 t_hr = [0, 8, 16]
-#after n days at these hours, where is the values (in seconds)
+#after n days at these hours, where are the values (in pcount)?
 t_hr_row_num = [(n_days*86400 + t*3600) for t in t_hr]
 
 # cut x in half to only look at top half of ice
