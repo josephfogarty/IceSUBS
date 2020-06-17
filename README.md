@@ -1,4 +1,4 @@
-# Heat Equation Solver in Sea Ice
+# Ice-SUBS (Ice SUrface energy Balance Solver)
 
 ## Overview
 
