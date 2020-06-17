@@ -1,7 +1,5 @@
 # Ice-SUBS (Ice SUrface energy Balance Solver)
 
-## Overview
-
 This repository is designed to hold all of the codes for solving one-dimensional the heat equation numerically in a block of sea ice floating on sea water. The goal of this code is to be coupled with the Large Eddy Simulation (LES) code that is being used in the Environmental Fluid Mechanics laboratory at Princeton University. However, it works well as a standalone code for solving the heat equation and surface enrgy balance.
 
 Collaborators:
@@ -83,8 +81,8 @@ def air_temp(t): #t is in seconds, so dt*i would be evaluated
 
 The consants used in all of these functions may be found in the first lines of code in `main.py`, and can be changed to your liking.
 
-## Animation Script
+## Animation Script (Work In Progress)
 
-The script `animator.py` takes teh output produced by the main code and creates an MPEG file of the time evolution of the temperature profile. It utilizes the `matplotlib` libraries `matplotlib.animation` as well as `matplotlib.pyplot`.
+The script `animator.py` should the output produced by the main code and creates an MPEG file of the time evolution of the temperature profile. It utilizes the `matplotlib` libraries `matplotlib.animation` as well as `matplotlib.pyplot`.
 
 
