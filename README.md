@@ -2,7 +2,7 @@
 
 ## Overview
 
-This repository is designed to hold all of the codes for solving one-dimensional the heat equation numerically in a block of sea ice floating on sea water. Eventually, this code will be coupled with the Large Eddy Simulation (LES) code that is being used in the Environmental Fluid Mechanics laboratory at Princeton University.
+This repository is designed to hold all of the codes for solving one-dimensional the heat equation numerically in a block of sea ice floating on sea water. The goal of this code is to be coupled with the Large Eddy Simulation (LES) code that is being used in the Environmental Fluid Mechanics laboratory at Princeton University. However, it works well as a standalone code for solving the heat equation and surface enrgy balance.
 
 Collaborators:
 - Joseph J. Fogarty
@@ -10,7 +10,7 @@ Collaborators:
 
 ## Physical System
 
-We now describe our physical system and problem statement. We consider a block of sea ice floating in the Arctic ocean that is 2 meters deep, with the top above the water and the bottom below the water. If we consider the temperature to be constant in the horizontal, then we are able to solve the 1D heat equation in the vertical for the temperature of the ice, giving a temperature profile of the ice block.
+Consider a block of sea ice floating in the Arctic ocean that is 2 meters deep, with the top above the water and the bottom below the water. If we consider the temperature to be constant in the horizontal, then we are able to solve the 1D heat equation in the vertical for the temperature of the ice, giving a temperature profile of the ice block.
 
 There are a number of fluxes that occur on the bottom and top of this ice sheet. The figure below summarizes all of the fluxes.
 
